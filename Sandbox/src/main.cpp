@@ -1,31 +1,40 @@
 #include "Jolt.h"
-#include <iostream>
+
+
+class ExampleLayer : public Jolt::Layer
+{
+public:
+	ExampleLayer()
+		:Layer()
+	{
+
+	}
+
+	virtual void OnUpdate(float ts) override
+	{
+		glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.0f);
+	}
+
+	virtual void OnImGuiRender() override
+	{
+		ImGui::Begin("test");
+
+		ImGui::ColorEdit3("Clear Color", &clearColor[0]);
+		ImGui::Text("Hello World");
+
+		ImGui::End();
+	}
+
+private:
+	glm::vec3 clearColor;
+};
 
 int main()
 {
 	Jolt::Application app("Testing");
-
-	Jolt::ImGuiInit();
-
-	glm::vec4 clearColor;
-	while (!app.GetWindow().WindowShouldClose())
-	{
-		Jolt::ImGuiBeginFrame();
-
-		ImGui::Begin("test");
-
-		ImGui::ColorEdit4("Clear Color", &clearColor[0]);
-		ImGui::Text("Hello World");
-
-		ImGui::End();
-
-		glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-
-		Jolt::ImGuiEndFrame();
-	}
+	app.PushLayer(new ExampleLayer());
 	
-	Jolt::ImGuiDestroy();
-
+	app.Run();
 
 	return 0;
 }

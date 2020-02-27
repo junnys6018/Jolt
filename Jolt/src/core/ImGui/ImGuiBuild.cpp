@@ -28,8 +28,6 @@ namespace Jolt
 
 	void ImGuiBeginFrame()
 	{
-		glfwPollEvents();
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -45,8 +43,6 @@ namespace Jolt
 		glViewport(0, 0, display_w, display_h);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		glfwSwapBuffers((GLFWwindow*)window.GetNaitiveWindow());
 	}
 
 	void ImGuiDestroy()

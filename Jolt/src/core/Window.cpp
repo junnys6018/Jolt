@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Window.h"
+#include "Application.h"
 #include "GLFW/glfw3.h"
 
 namespace Jolt
@@ -7,6 +7,12 @@ namespace Jolt
 	bool Window::WindowShouldClose()
 	{
 		return glfwWindowShouldClose((GLFWwindow*)m_window);
+	}
+
+	void Window::OnUpdate()
+	{
+		glfwPollEvents();
+		glfwSwapBuffers((GLFWwindow*)Application::Get().GetWindow().GetNaitiveWindow());
 	}
 
 	Window::Window(const char* name)

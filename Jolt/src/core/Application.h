@@ -1,5 +1,9 @@
 #pragma once
-#include "Jolt.h"
+#include "Window.h"
+#include "LayerStack.h"
+#include "ImGui/ImGuiBuild.h"
+
+#include <memory>
 
 namespace Jolt
 {
@@ -7,7 +11,9 @@ namespace Jolt
 	{
 	public:
 		Application(const char* name);
-		virtual ~Application() = default;
+		virtual ~Application();
+
+		void Run();
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
@@ -17,7 +23,7 @@ namespace Jolt
 	private:
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
-
+		float m_LastFrameTime;
 
 		static Application* s_Instance;
 	};
