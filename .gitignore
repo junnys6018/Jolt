@@ -3,3 +3,5 @@ bin
 bin-int
 *.sln
 *.vcxproj*
+*.glsl
+Sandbox/imgui.ini

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Application.h"
+#include "OpenGL/OpenGLDebug.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -21,6 +22,7 @@ namespace Jolt
 
 		gladLoadGL();
 
+		EnableGLDebugging();
 		ImGuiInit();
 	}
 

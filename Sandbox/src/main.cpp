@@ -5,28 +5,59 @@ class ExampleLayer : public Jolt::Layer
 {
 public:
 	ExampleLayer()
-		:Layer()
+		:Layer(), m_ClearColor(0.0f)
 	{
 
 	}
 
+	virtual void OnAttach() override
+	{
+		float buffer[] = {
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.0f,  0.5f
+		};
+		glGenVertexArrays(1, &m_VAO);
+		glBindVertexArray(m_VAO);
+
+		m_VertexBuffer = std::unique_ptr<Jolt::VertexBuffer>(Jolt::VertexBuffer::Create(sizeof(buffer), buffer));
+		m_VertexBuffer->Bind();
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+		m_Shader = std::unique_ptr<Jolt::Shader>(Jolt::Shader::CreateFromFile("FlatColor.glsl"));
+	}
+
+	virtual void OnDetach() override 
+	{
+		glDeleteVertexArrays(1, &m_VAO);
+	}
+
 	virtual void OnUpdate(float ts) override
 	{
-		glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.0f);
+		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glBindVertexArray(m_VAO);
+		m_Shader->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 	virtual void OnImGuiRender() override
 	{
 		ImGui::Begin("test");
 
-		ImGui::ColorEdit3("Clear Color", &clearColor[0]);
+		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
 		ImGui::Text("Hello World");
 
 		ImGui::End();
 	}
 
 private:
-	glm::vec3 clearColor;
+	glm::vec3 m_ClearColor;
+	std::unique_ptr<Jolt::VertexBuffer> m_VertexBuffer;
+	std::unique_ptr<Jolt::Shader> m_Shader;
+	GLuint m_VAO;
 };
 
 int main()
