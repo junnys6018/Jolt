@@ -1,0 +1,12 @@
+[submodule "Jolt/vendor/GLFW"]
+	path = Jolt/vendor/GLFW
+	url = https://github.com/glfw/glfw
+[submodule "Jolt/vendor/GLM"]
+	path = Jolt/vendor/GLM
+	url = https://github.com/g-truc/glm
+[submodule "Jolt/vendor/imgui"]
+	path = Jolt/vendor/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "Jolt/vendor/spdlog"]
+	path = Jolt/vendor/spdlog
+	url = https://github.com/gabime/spdlog
