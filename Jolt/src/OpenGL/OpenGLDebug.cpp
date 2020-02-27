@@ -17,20 +17,22 @@ namespace Jolt {
 		case GL_DEBUG_SEVERITY_HIGH:
 			if ((int)s_DebugLogLevel > 0)
 			{
-				std::cout << "[OpenGL Debug HIGH] " << message << std::endl;
+				LOG_ERROR("[OpenGL Debug HIGH] {0}", message);
+				if (s_DebugLogLevel == DebugLogLevel::HighAssert)
+					JOLT_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
 			}
 			break;
 		case GL_DEBUG_SEVERITY_MEDIUM:
 			if ((int)s_DebugLogLevel > 2)
-				std::cout << "[OpenGL Debug MEDIUM] " << message << std::endl;
+				LOG_WARN("[OpenGL Debug MEDIUM] {0}", message);
 			break;
 		case GL_DEBUG_SEVERITY_LOW:
 			if ((int)s_DebugLogLevel > 3)
-				std::cout << "[OpenGL Debug LOW] " << message << std::endl;
+				LOG_INFO("[OpenGL Debug LOW] {0}", message);
 			break;
 		case GL_DEBUG_SEVERITY_NOTIFICATION:
 			if ((int)s_DebugLogLevel > 4)
-				std::cout << "[OpenGL Debug NOTIFICATION] " << message << std::endl;
+				LOG_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
 			break;
 		}
 	}

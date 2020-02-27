@@ -9,19 +9,31 @@ namespace Jolt
 {
 	Application* Application::s_Instance = nullptr;
 
+	static void PrintSystemInfomation()
+	{
+		LOG_INFO("OpenGL Info:");
+		LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
+		LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
+		LOG_INFO("  Version: {0}", glGetString(GL_VERSION));
+		LOG_INFO("  GLFW Version: {0}", glfwGetVersionString());
+	}
+
 	Application::Application(const char* name)
 		:m_LastFrameTime(0.0f)
 	{
-		assert(!s_Instance);
+		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
 
-		assert(glfwInit());
+		Log::Init();
+
+		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
 		m_Window = std::make_unique<Window>(name);
 		glfwMakeContextCurrent((GLFWwindow*)m_Window->GetNaitiveWindow());
 		glfwSwapInterval(1); // Enable vsync
 
 		gladLoadGL();
 
+		PrintSystemInfomation();
 		EnableGLDebugging();
 		ImGuiInit();
 	}

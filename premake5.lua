@@ -30,7 +30,8 @@ project "Jolt"
 		"Jolt/vendor/stb_image/src",
 		"Jolt/vendor/GLFW/include",
 		"Jolt/vendor/imgui",
-		"Jolt/vendor/GLAD/include"
+		"Jolt/vendor/GLAD/include",
+		"Jolt/vendor/spdlog/include"
 	}
 
 	links 

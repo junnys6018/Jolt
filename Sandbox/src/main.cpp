@@ -5,7 +5,7 @@ class ExampleLayer : public Jolt::Layer
 {
 public:
 	ExampleLayer()
-		:Layer(), m_ClearColor(0.0f)
+		:Layer(), m_ClearColor(0.0f), m_FlatColor(2.0f)
 	{
 
 	}
@@ -40,6 +40,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBindVertexArray(m_VAO);
 		m_Shader->Bind();
+		m_Shader->SetVec3("u_FlatColor", m_FlatColor);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
@@ -48,13 +49,13 @@ public:
 		ImGui::Begin("test");
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
-		ImGui::Text("Hello World");
+		ImGui::ColorEdit3("Flat Color", &m_FlatColor[0]);
 
 		ImGui::End();
 	}
 
 private:
-	glm::vec3 m_ClearColor;
+	glm::vec3 m_ClearColor, m_FlatColor;
 	std::unique_ptr<Jolt::VertexBuffer> m_VertexBuffer;
 	std::unique_ptr<Jolt::Shader> m_Shader;
 	GLuint m_VAO;

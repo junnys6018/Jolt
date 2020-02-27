@@ -24,6 +24,10 @@ namespace Jolt
 
 		Mode mode = Mode::NONE;
 		std::ifstream file(filepath);
+		if (!file)
+		{
+			LOG_ERROR("Could not open file '{0}'", filepath);
+		}
 		std::string line;
 
 		while (std::getline(file, line))
@@ -73,8 +77,7 @@ namespace Jolt
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 
-			// TODO LOG infolog
-			std::cout << infoLog.data() << std::endl;
+			LOG_ERROR("{0}", infoLog.data());
 		}
 
 		glDetachShader(program, vertexShader);
@@ -122,10 +125,70 @@ namespace Jolt
 
 			glDeleteShader(shader);
 
-			// TODO LOG infolog
-			std::cout << infoLog.data() << std::endl;
+			LOG_ERROR("{0}", infoLog.data());
 		}
 
 		return shader;
+	}
+
+	// Uniform Setting
+	GLint Shader::GetUniformLocation(const std::string& name) const
+	{
+		glUseProgram(m_ID);
+		if (m_UniformLocations.find(name) != m_UniformLocations.end())
+			return m_UniformLocations[name];
+
+		GLint location = glGetUniformLocation(m_ID, name.c_str());
+		if (location == -1)
+			std::cout << name << " is not a valid uniform\n";
+		m_UniformLocations[name] = location;
+		return location;
+	}
+
+	// setter methods for shader uniforms
+	void Shader::SetInt(const std::string & name, const int& value) const
+	{
+		GLint location = GetUniformLocation(name);
+		glUniform1i(location, value);
+	}
+
+	void Shader::SetBool(const std::string & name, const bool& value) const
+	{
+		SetInt(name, (int)value);
+	}
+
+	void Shader::SetMat4(const std::string & name, const glm::mat4 & mat) const
+	{
+
+		GLint location = GetUniformLocation(name);
+		glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
+	}
+
+	void Shader::SetVec3(const std::string & name, const float& x, const float& y, const float& z) const
+	{
+		GLint location = GetUniformLocation(name);
+		glUniform3f(location, x, y, z);
+	}
+
+	void Shader::SetVec3(const std::string & name, const glm::vec3 & value) const
+	{
+		SetVec3(name, value.x, value.y, value.z);
+	}
+
+	void Shader::SetVec2(const std::string & name, const float& x, const float& y) const
+	{
+		GLint location = GetUniformLocation(name);
+		glUniform2f(location, x, y);
+	}
+
+	void Shader::SetVec2(const std::string & name, const glm::vec2 & value) const
+	{
+		SetVec2(name, value.x, value.y);
+	}
+
+	void Shader::SetFloat(const std::string & name, const float& value) const
+	{
+		GLint location = GetUniformLocation(name);
+		glUniform1f(location, value);
 	}
 }
