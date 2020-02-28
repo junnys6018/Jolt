@@ -69,15 +69,17 @@ namespace Jolt
 			GLint maxLength = 0;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+			if (maxLength != 0)
+			{
+				std::vector<GLchar> infoLog(maxLength);
+				glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+				LOG_ERROR("{0}", infoLog.data());
+			}
 
 			glDeleteProgram(program);
 
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
-
-			LOG_ERROR("{0}", infoLog.data());
 		}
 
 		glDetachShader(program, vertexShader);
@@ -120,12 +122,15 @@ namespace Jolt
 			GLint maxLength = 0;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+			if (maxLength != 0)
+			{
+				std::vector<GLchar> infoLog(maxLength);
+				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+				LOG_ERROR("{0}", infoLog.data());
+			}
 
 			glDeleteShader(shader);
 
-			LOG_ERROR("{0}", infoLog.data());
 		}
 
 		return shader;

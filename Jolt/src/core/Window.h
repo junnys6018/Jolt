@@ -5,12 +5,15 @@ namespace Jolt
 	class Window
 	{
 	public:
-		Window(const char* name);
+		static Window* Create(const char* name);
 		inline void* GetNaitiveWindow() const { return m_window; }
 
 		bool WindowShouldClose();
 		void OnUpdate();
+
+		~Window();
 	private:
+		Window(const char* name);
 		void* m_window;
 	};
 }

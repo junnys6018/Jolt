@@ -4,14 +4,12 @@
 #include "examples/imgui_impl_glfw.cpp"
 
 #include "ImGuiBuild.h"
-#include "Application.h"
+#include "Core/Application.h"
 
 namespace Jolt
 {
 	void ImGuiInit()
 	{
-		// Create window with graphics context
-		auto window = Application::Get().GetWindow();
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -22,7 +20,8 @@ namespace Jolt
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window.GetNaitiveWindow(), true);
+		auto window = Application::Get().GetWindow();
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->GetNaitiveWindow(), true);
 		ImGui_ImplOpenGL3_Init();
 	}
 
@@ -35,25 +34,14 @@ namespace Jolt
 
 	void ImGuiEndFrame()
 	{
-		auto window = Application::Get().GetWindow();
-
 		ImGui::Render();
-		int display_w, display_h;
-		glfwGetFramebufferSize((GLFWwindow*)window.GetNaitiveWindow(), &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void ImGuiDestroy()
 	{
-		auto window = Application::Get().GetWindow();
-
-		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-
-		glfwDestroyWindow((GLFWwindow*)window.GetNaitiveWindow());
-		glfwTerminate();
 	}
 }

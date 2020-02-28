@@ -25,7 +25,6 @@ project "Jolt"
 	includedirs 
 	{
 		"Jolt/src",
-		"Jolt/src/core",
 		"Jolt/vendor/GLM",
 		"Jolt/vendor/stb_image/src",
 		"Jolt/vendor/GLFW/include",
@@ -81,11 +80,12 @@ project "Sandbox"
 	
 	includedirs 
 	{
-		"Jolt/src/",
-		"Jolt/src/core",
-		"Jolt/vendor/stb_image/src",
-		"Jolt/vendor/GLAD/include",
+		"Jolt/src",
+		
 		"Jolt/vendor/GLM",
+		"Jolt/vendor/imgui",
+		"Jolt/vendor/GLAD/include",
+		"Jolt/vendor/spdlog/include"
 	}
 
 	links

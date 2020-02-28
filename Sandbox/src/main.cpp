@@ -5,7 +5,7 @@ class ExampleLayer : public Jolt::Layer
 {
 public:
 	ExampleLayer()
-		:Layer(), m_ClearColor(0.0f), m_FlatColor(2.0f)
+		:Layer(), m_ClearColor(0.0f), m_FlatColor(0.2f)
 	{
 
 	}
@@ -16,14 +16,13 @@ public:
 			 -0.5f, -0.5f,		1.0f, 0.0f, 0.0f,
 			  0.5f, -0.5f,		0.0f, 1.0f, 0.0f,
 			  0.5f,  0.5f,		0.0f, 0.0f, 1.0f,
-			 -0.5f,  0.5f,		0.5f, 0.5f, 0.5f
+			 -0.5f,  0.5f,		0.0f, 1.0f, 1.0f
 		};
 
 		GLuint indices[] = {
 			0, 1, 2,
 			0, 2, 3
 		};
-
 
 		m_VertexArray = std::unique_ptr<Jolt::VertexArray>(Jolt::VertexArray::Create());
 		m_VertexArray->Bind();

@@ -1,7 +1,7 @@
 #pragma once
-#include "Window.h"
-#include "LayerStack.h"
-#include "ImGui/ImGuiBuild.h"
+#include "Core/Window.h"
+#include "Core/LayerStack.h"
+#include "Core/ImGui/ImGuiBuild.h"
 
 #include <memory>
 
@@ -15,7 +15,7 @@ namespace Jolt
 
 		void Run();
 
-		inline Window& GetWindow() { return *m_Window; }
+		inline Window* GetWindow() { return m_Window.get(); }
 		inline static Application& Get() { return *s_Instance; }
 
 		void PushLayer(Layer* layer);

@@ -4,6 +4,11 @@
 
 namespace Jolt
 {
+	Window* Window::Create(const char* name)
+	{
+		return new Window(name);
+	}
+
 	bool Window::WindowShouldClose()
 	{
 		return glfwWindowShouldClose((GLFWwindow*)m_window);
@@ -12,7 +17,7 @@ namespace Jolt
 	void Window::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers((GLFWwindow*)Application::Get().GetWindow().GetNaitiveWindow());
+		glfwSwapBuffers((GLFWwindow*)GetNaitiveWindow());
 	}
 
 	Window::Window(const char* name)
@@ -20,4 +25,9 @@ namespace Jolt
 		m_window = glfwCreateWindow(1280, 720, name, NULL, NULL);
 	}
 
+	Window::~Window()
+	{
+		glfwDestroyWindow((GLFWwindow*)m_window);
+		glfwTerminate();
+	}
 }

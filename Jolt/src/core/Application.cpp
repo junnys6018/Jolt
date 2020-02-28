@@ -27,7 +27,7 @@ namespace Jolt
 		Log::Init();
 
 		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
-		m_Window = std::make_unique<Window>(name);
+		m_Window = std::unique_ptr<Window>(Window::Create(name));
 		glfwMakeContextCurrent((GLFWwindow*)m_Window->GetNaitiveWindow());
 		glfwSwapInterval(1); // Enable vsync
 
