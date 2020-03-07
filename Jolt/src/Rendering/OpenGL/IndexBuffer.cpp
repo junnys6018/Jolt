@@ -8,7 +8,7 @@ namespace Jolt
 		IndexBuffer* indexBuffer = new IndexBuffer(count);
 		glGenBuffers(1, &indexBuffer->m_ID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->m_ID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(data), data, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW);
 
 		return indexBuffer;
 	}

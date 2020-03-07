@@ -12,13 +12,13 @@ namespace Jolt
 
 	bool Window::WindowShouldClose()
 	{
-		return glfwWindowShouldClose((GLFWwindow*)m_window);
+		return glfwWindowShouldClose(m_window);
 	}
 
 	void Window::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers((GLFWwindow*)GetNaitiveWindow());
+		glfwSwapBuffers(m_window);
 	}
 
 	void Window::SetEventCallback(const EventCallbackFn& fn)
@@ -138,7 +138,7 @@ namespace Jolt
 
 	Window::~Window()
 	{
-		glfwDestroyWindow((GLFWwindow*)m_window);
+		glfwDestroyWindow(m_window);
 		glfwTerminate();
 	}
 }

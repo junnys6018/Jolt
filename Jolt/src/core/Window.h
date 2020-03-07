@@ -8,7 +8,7 @@ namespace Jolt
 	public:
 		using EventCallbackFn = std::function<void(Event*)>;
 		static Window* Create(const char* name);
-		inline void* GetNaitiveWindow() const { return m_window; }
+		inline GLFWwindow* GetNaitiveWindow() const { return m_window; }
 
 		bool WindowShouldClose();
 		void OnUpdate();

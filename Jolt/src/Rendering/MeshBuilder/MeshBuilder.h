@@ -16,6 +16,13 @@ namespace Jolt
 
 	struct Mesh
 	{
+	public:
+		Mesh() = default;
+		Mesh(VertexBuffer* VBuf, IndexBuffer* IBuf, VertexArray* VAO)
+			:VertexBuffer(VBuf), IndexBuffer(IBuf), VertexArray(VAO)
+		{
+
+		}
 		std::unique_ptr<VertexBuffer> VertexBuffer;
 		std::unique_ptr<IndexBuffer> IndexBuffer;
 		std::unique_ptr<VertexArray> VertexArray;

@@ -5,40 +5,16 @@ class ExampleLayer : public Layer
 {
 public:
 	ExampleLayer()
-		:Layer(), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f)
+		:Layer(), m_ClearColor(0.0f), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
 
 	}
 
 	virtual void OnAttach() override
 	{
-		float buffer[] = {
-			 -0.5f, -0.5f,		1.0f, 0.0f, 0.0f,
-			  0.5f, -0.5f,		0.0f, 1.0f, 0.0f,
-			  0.5f,  0.5f,		0.0f, 0.0f, 1.0f,
-			 -0.5f,  0.5f,		0.0f, 1.0f, 1.0f
-		};
-
-		GLuint indices[] = {
-			0, 1, 2,
-			0, 2, 3
-		};
-
-		m_VertexArray = std::unique_ptr<VertexArray>(VertexArray::Create());
-		m_VertexArray->Bind();
-
-		m_VertexBuffer = std::unique_ptr<VertexBuffer>(VertexBuffer::Create(sizeof(buffer), buffer, GL_DYNAMIC_DRAW));
-		m_VertexBuffer->Bind();
-		
-		m_VertexArray->SetVertexLayout(VertexLayout({ 2,3 }));
-
-		m_IndexBuffer = std::unique_ptr<IndexBuffer>(IndexBuffer::Create(6, indices));
-		m_IndexBuffer->Bind();
-
-		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
-
-		CuboidBuilder builder(1.0f);
-		builder.SetMeshProps(MeshPropsNormals | MeshPropsTextureCoords);
+		CuboidBuilder builder(1.0f, 1.0f, 2.0f);
+		m_Mesh = builder.GenerateMesh();
+		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
 	}
 
 	virtual void OnDetach() override 
@@ -50,14 +26,23 @@ public:
 	{
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		m_VertexArray->Bind();
-		m_Shader->Bind();
 
-		float* vBuf = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-		memcpy(vBuf + 2, &m_VertexColor[0], 3 * sizeof(float));
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		if (m_Rotating)
+		{
+			m_Angle += ts * m_RotateSpeed;
+		}
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		int width, height;
+		glfwGetFramebufferSize(Application::Get().GetWindow()->GetNaitiveWindow(), &width, &height);
+		float aspect = (float)width / height;
+
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));
+		model = glm::rotate(model, m_Angle, glm::vec3(1.0f, 1.0, 0.0f));
+
+		glm::mat4 proj = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
+		m_CubeShader->SetMat4("u_MVP", proj * model);
+		m_Mesh.VertexArray->Bind();
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	}
 
 	virtual void OnImGuiRender() override
@@ -65,18 +50,36 @@ public:
 		ImGui::Begin("test");
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
-		ImGui::ColorEdit3("Vertex Color", &m_VertexColor[0]);
-		ImGui::Text("FPS: %.1f", Application::Get().GetFPS());
+		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.1f, 5.0f);
+		ImGui::Text("Press 'A' to Rotate.   FPS: %.1f", Application::Get().GetFPS());
 
 		ImGui::End();
 	}
 
+	virtual void OnEvent(Event* e) override
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(JOLT_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent));
+	}
+
 private:
-	glm::vec3 m_ClearColor, m_VertexColor;
-	std::unique_ptr<VertexBuffer> m_VertexBuffer;
-	std::unique_ptr<IndexBuffer> m_IndexBuffer;
-	std::unique_ptr<VertexArray> m_VertexArray;
-	std::unique_ptr<Shader> m_Shader;
+	glm::vec3 m_ClearColor;
+	std::unique_ptr<Shader> m_CubeShader;
+	Mesh m_Mesh;
+
+	bool m_Rotating;
+	float m_Angle, m_RotateSpeed;
+	
+private:
+	bool OnKeyPressedEvent(KeyPressedEvent e)
+	{
+		if (e.GetKeyCode() == JOLT_KEY_A)
+		{
+			m_Rotating = !m_Rotating;
+			return true;
+		}
+		return false;
+	}
 };
 
 int main()

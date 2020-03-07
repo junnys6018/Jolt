@@ -30,7 +30,7 @@ namespace Jolt
 		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
 		m_Window = std::unique_ptr<Window>(Window::Create(name));
 		m_Window->SetEventCallback(JOLT_BIND_EVENT_FN(Application::OnEventCallback));
-		glfwMakeContextCurrent((GLFWwindow*)m_Window->GetNaitiveWindow());
+		glfwMakeContextCurrent(m_Window->GetNaitiveWindow());
 		glfwSwapInterval(1); // Enable vsync
 
 		gladLoadGL();
@@ -97,7 +97,6 @@ namespace Jolt
 					break;
 			}
 
-			// LOG_INFO(e->EventInfo());
 			EventDispatcher dispatch(e);
 			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
 			{

@@ -21,7 +21,7 @@ namespace Jolt
 
 		// Setup Platform/Renderer bindings
 		auto window = Application::Get().GetWindow();
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->GetNaitiveWindow(), true);
+		ImGui_ImplGlfw_InitForOpenGL(window->GetNaitiveWindow(), true);
 		ImGui_ImplOpenGL3_Init();
 	}
 
