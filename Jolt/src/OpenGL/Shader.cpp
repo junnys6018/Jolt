@@ -145,7 +145,7 @@ namespace Jolt
 
 		GLint location = glGetUniformLocation(m_ID, name.c_str());
 		if (location == -1)
-			std::cout << name << " is not a valid uniform\n";
+			LOG_ERROR("{0} is not a vaild uniform", name);
 		m_UniformLocations[name] = location;
 		return location;
 	}

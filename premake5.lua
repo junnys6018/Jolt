@@ -82,6 +82,7 @@ project "Sandbox"
 	{
 		"Jolt/src",
 		
+		"Jolt/vendor/GLFW/include",
 		"Jolt/vendor/GLM",
 		"Jolt/vendor/imgui",
 		"Jolt/vendor/GLAD/include",

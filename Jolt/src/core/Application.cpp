@@ -1,9 +1,10 @@
 #include "pch.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
 #include "Application.h"
 #include "OpenGL/OpenGLDebug.h"
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 
 namespace Jolt
 {
@@ -28,6 +29,7 @@ namespace Jolt
 
 		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
 		m_Window = std::unique_ptr<Window>(Window::Create(name));
+		m_Window->SetEventCallback(JOLT_BIND_EVENT_FN(Application::OnEventCallback));
 		glfwMakeContextCurrent((GLFWwindow*)m_Window->GetNaitiveWindow());
 		glfwSwapInterval(1); // Enable vsync
 
@@ -60,6 +62,7 @@ namespace Jolt
 			ImGuiEndFrame();
 
 			m_Window->OnUpdate();
+			ProcessEventQueue();
 		}
 	}
 
@@ -71,6 +74,24 @@ namespace Jolt
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
+	}
+
+	void Application::ProcessEventQueue()
+	{
+		while (Event* e = m_EventQueue.PopEvent())
+		{
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnEvent(e);
+				if (e->m_Handled)
+					break;
+			}
+
+			LOG_INFO(e->EventInfo());
+
+			// TODO: Implement Event data pool instead of heap allocating every event
+			delete e;
+		}
 	}
 }
 

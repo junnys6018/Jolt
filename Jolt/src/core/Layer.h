@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-
+#include "Core/Events/Event.h"
 namespace Jolt {
 
 	class Layer
@@ -13,6 +13,7 @@ namespace Jolt {
 		virtual void OnDetach() {}
 		virtual void OnUpdate(float ts) {}
 		virtual void OnImGuiRender() {}
+		virtual void OnEvent(Event* e) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
 	protected:

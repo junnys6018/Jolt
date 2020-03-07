@@ -1,19 +1,22 @@
 #pragma once
-
+#include "GLFW/glfw3.h"
+#include "Events/Event.h"
 namespace Jolt
 {
 	class Window
 	{
 	public:
+		using EventCallbackFn = std::function<void(Event*)>;
 		static Window* Create(const char* name);
 		inline void* GetNaitiveWindow() const { return m_window; }
 
 		bool WindowShouldClose();
 		void OnUpdate();
+		void SetEventCallback(const EventCallbackFn& fn);
 
 		~Window();
 	private:
 		Window(const char* name);
-		void* m_window;
+		GLFWwindow* m_window;
 	};
 }

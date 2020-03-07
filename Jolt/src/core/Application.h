@@ -2,6 +2,7 @@
 #include "Core/Window.h"
 #include "Core/LayerStack.h"
 #include "Core/ImGui/ImGuiBuild.h"
+#include "Core/Events/__Events__.h"
 
 #include <memory>
 
@@ -20,9 +21,14 @@ namespace Jolt
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+
+		/* Event Handling */
+		void OnEventCallback(Event* e) { m_EventQueue.PushEvent(e); }
+		void ProcessEventQueue();
 	private:
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
+		EventQueue m_EventQueue;
 		float m_LastFrameTime;
 
 		static Application* s_Instance;
