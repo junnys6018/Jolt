@@ -17,8 +17,9 @@ namespace Jolt
 		void Run();
 
 		inline Window* GetWindow() { return m_Window.get(); }
+		inline float GetFPS() { return m_FPS; }
 		inline static Application& Get() { return *s_Instance; }
-
+		
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
@@ -29,7 +30,7 @@ namespace Jolt
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		EventQueue m_EventQueue;
-		float m_LastFrameTime;
+		float m_LastFrameTime, m_FPS;
 
 		static Application* s_Instance;
 	};

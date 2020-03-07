@@ -46,11 +46,11 @@ project "Jolt"
 	pchsource "Jolt/src/pch.cpp"
 
 	filter "configurations:Debug"
-		defines { "DEBUG" }
+		defines { "JOLT_DEBUG" }
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "NDEBUG" }
+		defines { "JOLT_RELEASE" }
 		optimize "On"
 
 

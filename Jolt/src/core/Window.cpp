@@ -98,6 +98,42 @@ namespace Jolt
 				}
 			}
 		});
+
+		glfwSetWindowCloseCallback(m_window, [](GLFWwindow * window)
+		{
+			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
+			WindowCloseEvent* event = new WindowCloseEvent();
+			callback(event);
+		});
+
+		glfwSetWindowSizeCallback(m_window, [](GLFWwindow * window, int width, int height)
+		{
+			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
+			WindowResizeEvent* event = new WindowResizeEvent(width, height);
+			callback(event);
+		});
+
+		glfwSetWindowFocusCallback(m_window, [](GLFWwindow * window, int focused)
+		{
+			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
+			if (focused)
+			{
+				WindowFocusEvent* event = new WindowFocusEvent();
+				callback(event);
+			}
+			else
+			{
+				WindowLostFocusEvent* event = new WindowLostFocusEvent();
+				callback(event);
+			}
+		});
+
+		glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, int xpos, int ypos)
+		{
+			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
+			WindowMovedEvent* event = new WindowMovedEvent(xpos, ypos);
+			callback(event);
+		});
 	}
 
 	Window::~Window()

@@ -20,4 +20,26 @@ namespace Jolt
 		virtual std::string EventInfo() = 0;
 	};
 
+	class EventDispatcher
+	{
+	public:
+		EventDispatcher(Event* event)
+			: m_Event(event)
+		{
+		}
+
+		template<typename T>
+		bool Dispatch(std::function<bool(T)> func)
+		{
+			if (m_Event->GetEventType() == T::GetStaticType())
+			{
+				m_Event->m_Handled = func(*static_cast<T*>(m_Event));
+				return true;
+			}
+			return false;
+		}
+	private:
+		Event* m_Event;
+	};
+
 }

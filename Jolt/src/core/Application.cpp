@@ -20,7 +20,7 @@ namespace Jolt
 	}
 
 	Application::Application(const char* name)
-		:m_LastFrameTime(0.0f)
+		:m_LastFrameTime(0.0f), m_FPS(60.0f)
 	{
 		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
@@ -47,11 +47,21 @@ namespace Jolt
 
 	void Application::Run()
 	{
+		int FrameCount = 0;
+		float LastFPSTimer = glfwGetTime();
 		while (!m_Window->WindowShouldClose())
 		{
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+			m_LastFrameTime = time; 
+
+			FrameCount++;
+			if (time - LastFPSTimer > 1.0f)
+			{
+				m_FPS = FrameCount;
+				FrameCount = 0;
+				LastFPSTimer = time;
+			}
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(timestep);
@@ -88,6 +98,12 @@ namespace Jolt
 			}
 
 			LOG_INFO(e->EventInfo());
+			EventDispatcher dispatch(e);
+			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
+			{
+				glViewport(0, 0, e.GetWidth(), e.GetHeight());
+				return true;
+			});
 
 			// TODO: Implement Event data pool instead of heap allocating every event
 			delete e;

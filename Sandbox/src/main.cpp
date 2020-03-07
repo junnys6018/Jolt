@@ -59,6 +59,7 @@ public:
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
 		ImGui::ColorEdit3("Flat Color", &m_FlatColor[0]);
+		ImGui::Text("FPS: %.1f", Jolt::Application::Get().GetFPS());
 
 		ImGui::End();
 	}
