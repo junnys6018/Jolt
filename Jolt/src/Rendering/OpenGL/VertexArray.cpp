@@ -25,6 +25,7 @@ namespace Jolt
 	{
 		glBindVertexArray(0);
 	}
+
 	void VertexArray::SetVertexLayout(const VertexLayout& layout)
 	{
 		unsigned int stride = 0;

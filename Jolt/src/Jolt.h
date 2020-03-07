@@ -11,5 +11,6 @@
 
 #include "Core/Application.h"
 
-#include "OpenGL/__OpenGL__.h"
+#include "Rendering/OpenGL/__OpenGL__.h"
+#include "Rendering/MeshBuilder/__MeshBuilder__.h"
 #include "Core/Events/__Events__.h"

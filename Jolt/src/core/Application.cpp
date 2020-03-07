@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 
 #include "Application.h"
-#include "OpenGL/OpenGLDebug.h"
+#include "Rendering/OpenGL/OpenGLDebug.h"
 
 
 namespace Jolt
@@ -97,7 +97,7 @@ namespace Jolt
 					break;
 			}
 
-			LOG_INFO(e->EventInfo());
+			// LOG_INFO(e->EventInfo());
 			EventDispatcher dispatch(e);
 			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
 			{

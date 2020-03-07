@@ -1,11 +1,11 @@
 #include "Jolt.h"
+using namespace Jolt;
 
-
-class ExampleLayer : public Jolt::Layer
+class ExampleLayer : public Layer
 {
 public:
 	ExampleLayer()
-		:Layer(), m_ClearColor(0.0f), m_FlatColor(0.2f)
+		:Layer(), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f)
 	{
 
 	}
@@ -24,18 +24,21 @@ public:
 			0, 2, 3
 		};
 
-		m_VertexArray = std::unique_ptr<Jolt::VertexArray>(Jolt::VertexArray::Create());
+		m_VertexArray = std::unique_ptr<VertexArray>(VertexArray::Create());
 		m_VertexArray->Bind();
 
-		m_VertexBuffer = std::unique_ptr<Jolt::VertexBuffer>(Jolt::VertexBuffer::Create(sizeof(buffer), buffer));
+		m_VertexBuffer = std::unique_ptr<VertexBuffer>(VertexBuffer::Create(sizeof(buffer), buffer, GL_DYNAMIC_DRAW));
 		m_VertexBuffer->Bind();
 		
-		m_VertexArray->SetVertexLayout(Jolt::VertexLayout({ 2,3 }));
+		m_VertexArray->SetVertexLayout(VertexLayout({ 2,3 }));
 
-		m_IndexBuffer = std::unique_ptr<Jolt::IndexBuffer>(Jolt::IndexBuffer::Create(6, indices));
+		m_IndexBuffer = std::unique_ptr<IndexBuffer>(IndexBuffer::Create(6, indices));
 		m_IndexBuffer->Bind();
 
-		m_Shader = std::unique_ptr<Jolt::Shader>(Jolt::Shader::CreateFromFile("FlatColor.glsl"));
+		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
+
+		CuboidBuilder builder(1.0f);
+		builder.SetMeshProps(MeshPropsNormals | MeshPropsTextureCoords);
 	}
 
 	virtual void OnDetach() override 
@@ -49,7 +52,11 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_VertexArray->Bind();
 		m_Shader->Bind();
-		//m_Shader->SetVec3("u_FlatColor", m_FlatColor);
+
+		float* vBuf = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+		memcpy(vBuf + 2, &m_VertexColor[0], 3 * sizeof(float));
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
@@ -58,23 +65,23 @@ public:
 		ImGui::Begin("test");
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
-		ImGui::ColorEdit3("Flat Color", &m_FlatColor[0]);
-		ImGui::Text("FPS: %.1f", Jolt::Application::Get().GetFPS());
+		ImGui::ColorEdit3("Vertex Color", &m_VertexColor[0]);
+		ImGui::Text("FPS: %.1f", Application::Get().GetFPS());
 
 		ImGui::End();
 	}
 
 private:
-	glm::vec3 m_ClearColor, m_FlatColor;
-	std::unique_ptr<Jolt::VertexBuffer> m_VertexBuffer;
-	std::unique_ptr<Jolt::IndexBuffer> m_IndexBuffer;
-	std::unique_ptr<Jolt::VertexArray> m_VertexArray;
-	std::unique_ptr<Jolt::Shader> m_Shader;
+	glm::vec3 m_ClearColor, m_VertexColor;
+	std::unique_ptr<VertexBuffer> m_VertexBuffer;
+	std::unique_ptr<IndexBuffer> m_IndexBuffer;
+	std::unique_ptr<VertexArray> m_VertexArray;
+	std::unique_ptr<Shader> m_Shader;
 };
 
 int main()
 {
-	Jolt::Application app("Testing");
+	Application app("Testing");
 	app.PushLayer(new ExampleLayer());
 	
 	app.Run();
