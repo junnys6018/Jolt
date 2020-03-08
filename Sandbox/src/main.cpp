@@ -12,7 +12,11 @@ public:
 
 	virtual void OnAttach() override
 	{
-		CuboidBuilder builder(1.0f, 1.0f, 2.0f);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 46U);
+		//CuboidBuilder builder(1.0f, 1.0f, 2.0f);
+
 		m_Mesh = builder.GenerateMesh();
 		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
 	}
@@ -42,7 +46,7 @@ public:
 		glm::mat4 proj = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
 		m_CubeShader->SetMat4("u_MVP", proj * model);
 		m_Mesh.VertexArray->Bind();
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, m_Mesh.IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 
 	virtual void OnImGuiRender() override

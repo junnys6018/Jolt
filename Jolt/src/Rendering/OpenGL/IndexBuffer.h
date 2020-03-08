@@ -9,6 +9,8 @@ namespace Jolt
 	public:
 		static IndexBuffer* Create(std::size_t count, const GLuint* data);
 
+		inline std::size_t GetCount() const { return m_Count; }
+
 		void Bind();
 		void UnBind();
 		~IndexBuffer();
