@@ -26,6 +26,11 @@ namespace Jolt
 
 	VertexBuffer::~VertexBuffer()
 	{
+		GLint current_vertex_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_vertex_buffer);
+		if (current_vertex_buffer == m_ID)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
 		glDeleteBuffers(1, &m_ID);
 	}
 

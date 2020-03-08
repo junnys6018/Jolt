@@ -13,6 +13,11 @@ namespace Jolt
 
 	VertexArray::~VertexArray()
 	{
+		GLint current_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &current_vertex_array);
+		if (current_vertex_array == m_ID)
+		{
+			glBindVertexArray(0);
+		}
 		glDeleteVertexArrays(1, &m_ID);
 	}
 

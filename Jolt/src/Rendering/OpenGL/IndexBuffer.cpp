@@ -25,6 +25,11 @@ namespace Jolt
 
 	IndexBuffer::~IndexBuffer()
 	{
+		GLint current_index_buffer; glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &current_index_buffer);
+		if (current_index_buffer == m_ID)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
 		glDeleteBuffers(1, &m_ID);
 	}
 }

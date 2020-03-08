@@ -103,6 +103,11 @@ namespace Jolt
 
 	Shader::~Shader()
 	{
+		GLint current_program; glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
+		if (current_program == m_ID)
+		{
+			glUseProgram(0);
+		}
 		glDeleteProgram(m_ID);
 	}
 

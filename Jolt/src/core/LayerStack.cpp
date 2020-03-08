@@ -35,6 +35,7 @@ namespace Jolt {
 			m_Layers.erase(it);
 			m_LayerInsertIndex--;
 		}
+		delete layer;
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay)
@@ -45,6 +46,7 @@ namespace Jolt {
 			overlay->OnDetach();
 			m_Layers.erase(it);
 		}
+		delete overlay;
 	}
 
 }

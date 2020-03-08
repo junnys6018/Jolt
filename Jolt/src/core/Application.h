@@ -22,6 +22,8 @@ namespace Jolt
 		
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+		void PopLayer(Layer* layer);
+		void PopOverlay(Layer* overlay);
 
 		/* Event Handling */
 		void OnEventCallback(Event* e) { m_EventQueue.PushEvent(e); }
@@ -30,6 +32,10 @@ namespace Jolt
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		EventQueue m_EventQueue;
+
+		std::vector<Layer*> m_RemoveLayers;
+		std::vector<Layer*> m_RemoveOverlays;
+
 		float m_LastFrameTime, m_FPS;
 
 		static Application* s_Instance;

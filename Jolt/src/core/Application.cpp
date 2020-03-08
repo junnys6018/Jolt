@@ -53,7 +53,7 @@ namespace Jolt
 		{
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time; 
+			m_LastFrameTime = time;
 
 			FrameCount++;
 			if (time - LastFPSTimer > 1.0f)
@@ -63,6 +63,7 @@ namespace Jolt
 				LastFPSTimer = time;
 			}
 
+			glClear(GL_COLOR_BUFFER_BIT);
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(timestep);
 
@@ -73,6 +74,25 @@ namespace Jolt
 
 			m_Window->OnUpdate();
 			ProcessEventQueue();
+
+			// Remove pending layers
+			if (!m_RemoveLayers.empty())
+			{
+				for (Layer* layer : m_RemoveLayers)
+				{
+					m_LayerStack.PopLayer(layer);
+				}
+				m_RemoveLayers.clear();
+			}
+
+			if (!m_RemoveOverlays.empty())
+			{
+				for (Layer* overlay : m_RemoveOverlays)
+				{
+					m_LayerStack.PopOverlay(overlay);
+				}
+				m_RemoveOverlays.clear();
+			}
 		}
 	}
 
@@ -84,6 +104,16 @@ namespace Jolt
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
+	}
+
+	void Application::PopLayer(Layer* layer)
+	{
+		m_RemoveLayers.push_back(layer);
+	}
+
+	void Application::PopOverlay(Layer* overlay)
+	{
+		m_RemoveOverlays.push_back(overlay);
 	}
 
 	void Application::ProcessEventQueue()
