@@ -48,7 +48,7 @@ namespace Jolt
 	void Application::Run()
 	{
 		int FrameCount = 0;
-		float LastFPSTimer = glfwGetTime();
+		float LastFPSTimer = (float)glfwGetTime();
 		while (!m_Window->WindowShouldClose())
 		{
 			float time = (float)glfwGetTime();
@@ -56,9 +56,9 @@ namespace Jolt
 			m_LastFrameTime = time;
 
 			FrameCount++;
-			if (time - LastFPSTimer > 1.0f)
+			if (time - LastFPSTimer > 1.0f) // Update every second
 			{
-				m_FPS = FrameCount;
+				m_FPS = (float)FrameCount / (time - LastFPSTimer);
 				FrameCount = 0;
 				LastFPSTimer = time;
 			}

@@ -3,7 +3,7 @@
 
 namespace Jolt
 {
-	IndexBuffer* IndexBuffer::Create(std::size_t count, const GLuint* data)
+	IndexBuffer* IndexBuffer::Create(GLsizei count, const GLuint* data)
 	{
 		IndexBuffer* indexBuffer = new IndexBuffer(count);
 		glGenBuffers(1, &indexBuffer->m_ID);

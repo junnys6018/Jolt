@@ -45,6 +45,8 @@ project "Jolt"
 	pchheader "pch.h"
 	pchsource "Jolt/src/pch.cpp"
 
+	defines { "_CRT_SECURE_NO_WARNINGS" }
+
 	filter "configurations:Debug"
 		defines { "JOLT_DEBUG" }
 		symbols "On"
@@ -93,6 +95,8 @@ project "Sandbox"
 	{
 		"Jolt"
 	}
+
+	defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "configurations:Debug"
 	defines { "DEBUG" }

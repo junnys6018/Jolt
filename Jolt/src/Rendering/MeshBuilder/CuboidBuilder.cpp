@@ -80,5 +80,6 @@ namespace Jolt
 			// TODO: 
 			LOG_CRITICAL("HAVENT IMPLEMENTED VERTEX ATTRIBUTES");
 		}
+		return Mesh();
 	}
 }

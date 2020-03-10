@@ -7,20 +7,20 @@ namespace Jolt
 	class IndexBuffer
 	{
 	public:
-		static IndexBuffer* Create(std::size_t count, const GLuint* data);
+		static IndexBuffer* Create(GLsizei count, const GLuint* data);
 
-		inline std::size_t GetCount() const { return m_Count; }
+		inline GLsizei GetCount() const { return m_Count; }
 
 		void Bind();
 		void UnBind();
 		~IndexBuffer();
 	private:
-		IndexBuffer(std::size_t count)
+		IndexBuffer(GLsizei count)
 			:m_ID(0), m_Count(count) 
 		{
 	
 		}
 		GLuint m_ID;
-		std::size_t m_Count;
+		GLsizei m_Count;
 	};
 }

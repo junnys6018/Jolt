@@ -32,12 +32,12 @@ namespace Jolt
 
 			std::vector<float> Vertices;
 			Vertices.reserve(3 * m_VerticesPerRev * m_VerticesPerRev);
-			for (int i_theta = 0; i_theta < m_VerticesPerRev; i_theta++)
+			for (uint32_t i_theta = 0; i_theta < m_VerticesPerRev; i_theta++)
 			{
-				for (int i_phi = 0; i_phi < m_VerticesPerRev; i_phi++)
+				for (uint32_t i_phi = 0; i_phi < m_VerticesPerRev; i_phi++)
 				{
-					float theta = M_PI * (float) i_theta / (m_VerticesPerRev - 1);
-					float phi = 2 * M_PI * (float) i_phi / (m_VerticesPerRev - 1);
+					float theta = (float)M_PI * (float) i_theta / (m_VerticesPerRev - 1);
+					float phi = 2 * (float)M_PI * (float) i_phi / (m_VerticesPerRev - 1);
 					Vertices.push_back(x * std::sinf(theta) * std::cosf(phi));
 					Vertices.push_back(y * std::cosf(theta));
 					Vertices.push_back(z * std::sinf(theta) * std::sinf(phi));
@@ -46,12 +46,12 @@ namespace Jolt
 
 			/* Notes: We wrap the sphere along the x direction, but not y. 
 			 * Therefore x segments require an extra row of triangles   */
-			std::vector<unsigned int> Indices;
+			std::vector<GLuint> Indices;
 			Indices.reserve(6 * m_VerticesPerRev * (m_VerticesPerRev - 1));
 			auto Idx = [&](int x, int y) -> unsigned int {return y * m_VerticesPerRev + (x % m_VerticesPerRev); };
-			for (int y = 0; y < m_VerticesPerRev - 1; y++)
+			for (uint32_t y = 0; y < m_VerticesPerRev - 1; y++)
 			{
-				for (int x = 0; x < m_VerticesPerRev; x++)
+				for (uint32_t x = 0; x < m_VerticesPerRev; x++)
 				{
 					Indices.push_back(Idx(x, y));
 					Indices.push_back(Idx(x, y + 1));
@@ -70,7 +70,7 @@ namespace Jolt
 			VBuf->Bind();
 			VAO->SetVertexLayout({ 3 });
 
-			auto IBuf = IndexBuffer::Create(Indices.size(), Indices.data());
+			auto IBuf = IndexBuffer::Create((GLsizei)Indices.size(), Indices.data());
 			IBuf->Bind();
 
 			return Mesh(VBuf, IBuf, VAO);

@@ -14,7 +14,7 @@ public:
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 46U);
+		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 64U);
 		//CuboidBuilder builder(1.0f, 1.0f, 2.0f);
 
 		m_Mesh = builder.GenerateMesh();
@@ -115,12 +115,12 @@ public:
 		m_VertexArray = CreateUnique<VertexArray>();
 		m_VertexArray->Bind();
 
-		m_VertexBuffer = std::unique_ptr<VertexBuffer>(VertexBuffer::Create(sizeof(buffer), buffer, GL_DYNAMIC_DRAW));
+		m_VertexBuffer = CreateUnique<VertexBuffer>(sizeof(buffer), buffer, GL_DYNAMIC_DRAW);
 		m_VertexBuffer->Bind();
 
 		m_VertexArray->SetVertexLayout(VertexLayout({ 2,3 }));
 
-		m_IndexBuffer = std::unique_ptr<IndexBuffer>(IndexBuffer::Create(6, indices));
+		m_IndexBuffer = CreateUnique<IndexBuffer>(6, indices);
 		m_IndexBuffer->Bind();
 
 		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
@@ -147,7 +147,7 @@ public:
 
 	virtual void OnImGuiRender() override
 	{
-		ImGui::Begin("test2");
+		ImGui::Begin("test");
 
 		if (ImGui::Button("<-"))
 		{
@@ -168,12 +168,65 @@ private:
 	std::unique_ptr<Shader> m_Shader;
 };
 
+class ImGuiOverlay : public Layer
+{
+public:
+	ImGuiOverlay()
+		:Layer(), m_State(State::None)
+	{
+
+	}
+
+	virtual void OnImGuiRender() override
+	{
+		ImGui::Begin("test");
+		switch (m_State)
+		{
+		case State::None:
+			if (ImGui::Button("1"))
+			{
+				Application::Get().PushLayer(new ExampleLayer());
+			}
+			
+			if (ImGui::Button("2"))
+			{
+				Application::Get().PushLayer(new ExampleLayer2());
+			}
+			break;
+		case State::Example1:
+			break;
+		case State::Example2:
+			break;
+		}
+
+
+		ImGui::End();
+	}
+
+private:
+	enum class State
+	{
+		None,
+		Example1,
+		Example2
+	} m_State;
+};
+
+class ExampleApp : public Application
+{
+public:
+	ExampleApp()
+		:Application("Sandbox")
+	{
+		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer2());
+	}
+};
+
 int main()
 {
-	Application app("Testing");
-	app.PushLayer(new ExampleLayer());
-	app.PushLayer(new ExampleLayer2());
-	app.Run();
+	ExampleApp* app = new ExampleApp();
+	app->Run();
 
 	return 0;
 }
