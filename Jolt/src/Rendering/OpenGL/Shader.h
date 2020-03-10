@@ -25,6 +25,9 @@ namespace Jolt
 
 		void Bind();
 		void UnBind();
+
+		inline GLuint GetHandle() { return m_ID; }
+
 		~Shader();
 	private:
 		Shader() = default;

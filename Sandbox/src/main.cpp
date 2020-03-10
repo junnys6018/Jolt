@@ -15,7 +15,7 @@ public:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 64U);
-		//CuboidBuilder builder(1.0f, 1.0f, 2.0f);
+		//CuboidBuilder builder(2.0f);
 
 		m_Mesh = builder.GenerateMesh();
 		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
@@ -83,7 +83,7 @@ private:
 		if (e.GetKeyCode() == JOLT_KEY_A)
 		{
 			m_Rotating = !m_Rotating;
-			return true;
+			return false;
 		}
 		return false;
 	}
@@ -138,9 +138,9 @@ public:
 		m_VertexArray->Bind();
 		m_Shader->Bind();
 
-		float* vBuf = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+		float* vBuf = (float*)glMapNamedBuffer(m_VertexBuffer->GetHandle(), GL_READ_WRITE);
 		memcpy(vBuf + 2, &m_VertexColor[0], 3 * sizeof(float));
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		glUnmapNamedBuffer(m_VertexBuffer->GetHandle());
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
@@ -218,7 +218,8 @@ public:
 	ExampleApp()
 		:Application("Sandbox")
 	{
-		PushLayer(new ExampleLayer());
+		PushOverlay(new ImGuiOverlay());
+		//PushLayer(new ExampleLayer());
 		//PushLayer(new ExampleLayer2());
 	}
 };

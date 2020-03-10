@@ -74,65 +74,72 @@ namespace Jolt
 
 			m_Window->OnUpdate();
 			ProcessEventQueue();
-
-			// Remove pending layers
-			if (!m_RemoveLayers.empty())
-			{
-				for (Layer* layer : m_RemoveLayers)
-				{
-					m_LayerStack.PopLayer(layer);
-				}
-				m_RemoveLayers.clear();
-			}
-
-			if (!m_RemoveOverlays.empty())
-			{
-				for (Layer* overlay : m_RemoveOverlays)
-				{
-					m_LayerStack.PopOverlay(overlay);
-				}
-				m_RemoveOverlays.clear();
-			}
 		}
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
-		m_LayerStack.PushLayer(layer);
+		OnEventCallback(new EngineLayerPushedEvent(layer));
 	}
 
-	void Application::PushOverlay(Layer* layer)
+	void Application::PushOverlay(Layer* overlay)
 	{
-		m_LayerStack.PushOverlay(layer);
+		OnEventCallback(new EngineOverlayPushedEvent(overlay));
 	}
 
 	void Application::PopLayer(Layer* layer)
 	{
-		m_RemoveLayers.push_back(layer);
+		OnEventCallback(new EngineLayerPoppedEvent(layer));
 	}
 
 	void Application::PopOverlay(Layer* overlay)
 	{
-		m_RemoveOverlays.push_back(overlay);
+		OnEventCallback(new EngineOverlayPoppedEvent(overlay));
 	}
 
 	void Application::ProcessEventQueue()
 	{
 		while (Event* e = m_EventQueue.PopEvent())
 		{
-			for (Layer* layer : m_LayerStack)
-			{
-				layer->OnEvent(e);
-				if (e->m_Handled)
-					break;
-			}
-
 			EventDispatcher dispatch(e);
 			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
 			{
 				glViewport(0, 0, e.GetWidth(), e.GetHeight());
 				return true;
 			});
+
+			dispatch.Dispatch<EngineLayerPushedEvent>([this](EngineLayerPushedEvent e) -> bool
+			{
+				m_LayerStack.PushLayer(e.GetLayer());
+				return true;
+			});
+
+			dispatch.Dispatch<EngineOverlayPushedEvent>([this](EngineOverlayPushedEvent e) -> bool
+			{
+				m_LayerStack.PushOverlay(e.GetLayer());
+				return true;
+			});
+			dispatch.Dispatch<EngineLayerPoppedEvent>([this](EngineLayerPoppedEvent e) -> bool
+			{
+				m_LayerStack.PopLayer(e.GetLayer());
+				return true;
+			});
+
+			dispatch.Dispatch<EngineOverlayPoppedEvent>([this](EngineOverlayPoppedEvent e) -> bool
+			{
+				m_LayerStack.PopOverlay(e.GetLayer());
+				return true;
+			});
+
+
+			for (Layer* layer : m_LayerStack)
+			{
+				if (e->m_Handled)
+					break;
+				layer->OnEvent(e);
+			}
+
+			//LOG_INFO(e.EventInfo());
 
 			// TODO: Implement Event data pool instead of heap allocating every event
 			delete e;

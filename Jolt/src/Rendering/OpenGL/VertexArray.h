@@ -14,6 +14,8 @@ namespace Jolt
 		void Bind();
 		void UnBind();
 
+		inline GLuint GetHandle() { return m_ID; }
+
 		void SetVertexLayout(const VertexLayout& layout);
 	private:
 		VertexArray() = default;

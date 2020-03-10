@@ -8,7 +8,8 @@ namespace Jolt
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved, // Implemented in ApplicationEvent.h
 		KeyPressed, KeyReleased, KeyTyped, // Implemented in KeyEvent.h
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled // Implemented in MouseEvent.h
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled, // Implemented in MouseEvent.h
+		EngineLayerPopped, EngineLayerPushed, EngineOverlayPopped, EngineOverlayPushed // Implemented in EngineEvent.h
 	};
 
 	class Event
