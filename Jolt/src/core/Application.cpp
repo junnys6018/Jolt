@@ -4,7 +4,7 @@
 
 #include "Application.h"
 #include "Rendering/OpenGL/OpenGLDebug.h"
-
+#include "Input.h"
 
 namespace Jolt
 {
@@ -28,12 +28,14 @@ namespace Jolt
 		Log::Init();
 
 		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
-		m_Window = std::unique_ptr<Window>(Window::Create(name));
+		m_Window = CreateUnique<Window>(name);
 		m_Window->SetEventCallback(JOLT_BIND_EVENT_FN(Application::OnEventCallback));
 		glfwMakeContextCurrent(m_Window->GetNaitiveWindow());
 		glfwSwapInterval(1); // Enable vsync
 
 		gladLoadGL();
+
+		Input::Init(m_Window->GetNaitiveWindow());
 
 		PrintSystemInfomation();
 		EnableGLDebugging();

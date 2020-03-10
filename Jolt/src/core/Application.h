@@ -12,6 +12,8 @@ namespace Jolt
 	{
 	public:
 		Application(const char* name);
+		Application(const Application&) = delete;
+		Application& operator=(const Application&) = delete;
 		virtual ~Application();
 
 		void Run();

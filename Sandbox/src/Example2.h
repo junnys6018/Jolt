@@ -26,6 +26,7 @@ public:
 	virtual void OnDetach() override
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	virtual void OnUpdate(float ts) override

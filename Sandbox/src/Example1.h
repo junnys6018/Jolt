@@ -42,7 +42,7 @@ public:
 
 	virtual void OnDetach() override
 	{
-
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	virtual void OnUpdate(float ts) override
