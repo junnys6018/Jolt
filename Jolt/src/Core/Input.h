@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 namespace Jolt
 {

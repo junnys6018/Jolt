@@ -1,6 +1,7 @@
 #pragma once
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include "Events/Event.h"
+
 namespace Jolt
 {
 	class Window

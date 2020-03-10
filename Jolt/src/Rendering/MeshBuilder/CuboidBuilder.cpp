@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CuboidBuilder.h"
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 using namespace glm;
 
 namespace Jolt

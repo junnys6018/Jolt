@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "Application.h"
 #include "Rendering/OpenGL/OpenGLDebug.h"
@@ -107,7 +107,7 @@ namespace Jolt
 			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
 			{
 				glViewport(0, 0, e.GetWidth(), e.GetHeight());
-				return true;
+				return false;
 			});
 
 			dispatch.Dispatch<EngineLayerPushedEvent>([this](EngineLayerPushedEvent e) -> bool

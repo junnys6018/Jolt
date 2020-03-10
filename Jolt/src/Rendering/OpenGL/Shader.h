@@ -2,9 +2,8 @@
 #include <string>
 #include <map>
 
-
-#include "glad/glad.h"
-#include "glm/glm.hpp"
+#include <glad/glad.h>
+#include <glm/glm.hpp>
 
 namespace Jolt
 {

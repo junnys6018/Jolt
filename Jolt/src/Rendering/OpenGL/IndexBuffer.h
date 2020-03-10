@@ -1,6 +1,5 @@
 #pragma once 
-#include "glad/glad.h"
-#include <cstdlib>
+#include <glad/glad.h>
 
 namespace Jolt
 {
