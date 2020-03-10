@@ -20,7 +20,7 @@ namespace Jolt {
 		std::vector<Layer*>::iterator end() { return m_Layers.end(); }
 	private:
 		std::vector<Layer*> m_Layers;
-		uint32_t m_LayerInsertIndex = 0;
+		uint32_t m_OverlayInsertIndex = 0;
 	};
 
 }
