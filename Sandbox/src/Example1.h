@@ -7,7 +7,7 @@ class ExampleLayer : public Layer
 {
 public:
 	ExampleLayer()
-		:Layer("Example 2"), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f)
+		:Layer("Example 2"), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f), m_UseTexture(false)
 	{
 
 	}
@@ -15,10 +15,10 @@ public:
 	virtual void OnAttach() override
 	{
 		float buffer[] = {
-			 -0.5f, -0.5f,		1.0f, 0.0f, 0.0f,
-			  0.5f, -0.5f,		0.0f, 1.0f, 0.0f,
-			  0.5f,  0.5f,		0.0f, 0.0f, 1.0f,
-			 -0.5f,  0.5f,		0.0f, 1.0f, 1.0f
+			 -0.5f, -0.5f,    1.0f, 0.0f, 0.0f,    0.0f, 0.0f,
+			  0.5f, -0.5f,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f,
+			  0.5f,  0.5f,    0.0f, 0.0f, 1.0f,    1.0f, 1.0f,
+			 -0.5f,  0.5f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f
 		};
 
 		GLuint indices[] = {
@@ -32,12 +32,17 @@ public:
 		m_VertexBuffer = CreateUnique<VertexBuffer>(sizeof(buffer), buffer, GL_DYNAMIC_DRAW);
 		m_VertexBuffer->Bind();
 
-		m_VertexArray->SetVertexLayout(VertexLayout({ 2,3 }));
+		m_VertexArray->SetVertexLayout(VertexLayout({ 2,3,2 }));
 
 		m_IndexBuffer = CreateUnique<IndexBuffer>(6, indices);
 		m_IndexBuffer->Bind();
 
+		m_Texture = CreateUnique<Texture>("HelloWorld.png");
+		m_Texture->Bind();
+
 		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
+		m_Shader->SetBool("u_UseTexture", m_UseTexture);
+		m_Shader->SetInt("u_Texture", 0);
 	}
 
 	virtual void OnDetach() override
@@ -65,6 +70,11 @@ public:
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
 		ImGui::ColorEdit3("Vertex Color", &m_VertexColor[0]);
+		if (ImGui::Checkbox("Use Texture", &m_UseTexture))
+		{
+			m_Shader->SetBool("u_UseTexture", m_UseTexture);
+		}
+
 		ImGui::Text("FPS: %.1f", Application::Get().GetFPS());
 
 		ImGui::End();
@@ -76,4 +86,6 @@ private:
 	std::unique_ptr<IndexBuffer> m_IndexBuffer;
 	std::unique_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<Shader> m_Shader;
+	std::unique_ptr<Texture> m_Texture;
+	bool m_UseTexture;
 };

@@ -6,3 +6,4 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "VertexLayout.h"
+#include "Texture.h"

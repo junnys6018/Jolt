@@ -9,11 +9,10 @@ namespace Jolt
 		static IndexBuffer* Create(GLsizei count, const GLuint* data);
 
 		inline GLsizei GetCount() const { return m_Count; }
+		inline GLuint GetHandle() { return m_ID; }
 
 		void Bind();
 		void UnBind();
-
-		inline GLuint GetHandle() { return m_ID; }
 
 		~IndexBuffer();
 	private:
