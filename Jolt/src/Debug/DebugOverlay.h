@@ -18,6 +18,7 @@ namespace Jolt
 
 	private:
 		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		void DrawProfileData(int id);
 
 	private:
 		bool m_Open;

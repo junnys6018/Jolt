@@ -16,3 +16,6 @@
 #include "Core/Events/__Events__.h"
 #include "Core/Input.h"
 #include "Camera/CameraController.h"
+
+#include "Debug/Profiling/Timer.h"
+#include "Debug/Profiling/CPUProfiler.h"

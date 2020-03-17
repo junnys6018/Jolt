@@ -16,6 +16,8 @@ public:
 
 	virtual void OnImGuiRender() override
 	{
+		JOLT_PROFILE_FUNCTION();
+
 		ImGui::Begin("test");
 		switch (m_State)
 		{

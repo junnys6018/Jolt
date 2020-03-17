@@ -6,6 +6,7 @@
 #include <examples/imgui_impl_glfw.h>
 
 #include "Core/Application.h"
+#include "Debug/Profiling/Timer.h"
 
 namespace Jolt
 {
@@ -46,6 +47,7 @@ namespace Jolt
 
 	void ImGuiOverlay::Begin()
 	{
+		JOLT_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -53,6 +55,7 @@ namespace Jolt
 
 	void ImGuiOverlay::End()
 	{
+		JOLT_PROFILE_FUNCTION();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}

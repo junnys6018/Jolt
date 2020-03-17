@@ -26,6 +26,9 @@ namespace Jolt
 		s_Instance = this;
 
 		Log::Init();
+#ifdef JOLT_PROFILE
+		CPUProfiler::Init();
+#endif
 
 		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
 		m_Window = CreateUnique<Window>(name);

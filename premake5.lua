@@ -48,11 +48,11 @@ project "Jolt"
 	defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "configurations:Debug"
-		defines { "JOLT_DEBUG" }
+		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "JOLT_RELEASE" }
+		defines { "JOLT_RELEASE", "JOLT_PROFILE" }
 		optimize "On"
 
 
@@ -99,9 +99,9 @@ project "Sandbox"
 	defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "configurations:Debug"
-	defines { "DEBUG" }
-	symbols "On"
+		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
+		symbols "On"
 
 	filter "configurations:Release"
-	defines { "NDEBUG" }
-	optimize "On"
+		defines { "JOLT_RELEASE", "JOLT_PROFILE" }
+		optimize "On"

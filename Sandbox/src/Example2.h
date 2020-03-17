@@ -32,6 +32,8 @@ public:
 
 	virtual void OnUpdate(float ts) override
 	{
+		JOLT_PROFILE_FUNCTION();
+
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
 		m_Camera.OnUpdate(ts);
 
@@ -52,6 +54,7 @@ public:
 
 	virtual void OnImGuiRender() override
 	{
+		JOLT_PROFILE_FUNCTION();
 		ImGui::Begin("test");
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);

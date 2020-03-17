@@ -5,6 +5,7 @@
 #include "Core/Events/__Events__.h"
 
 #include "Debug/DebugOverlay.h"
+#include "Debug/Profiling/CPUProfiler.h"
 
 #include <memory>
 

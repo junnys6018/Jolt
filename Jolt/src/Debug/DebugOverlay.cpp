@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "DebugOverlay.h"
 #include "Core/Application.h"
-
+#include "Profiling/Timer.h"
 #include <imgui.h>
 
 namespace Jolt
 {
 	DebugOverlay::DebugOverlay()
-		:Layer("DebugOverlay"), m_Open(false), m_Selected(nullptr)
+		:Layer("DebugOverlay"), m_Open(true), m_Selected(nullptr)
 	{
 
 	}
@@ -19,6 +19,7 @@ namespace Jolt
 
 	void DebugOverlay::OnImGuiRender()
 	{
+		JOLT_PROFILE_FUNCTION();
 		if (m_Open)
 		{
 			ImGui::Begin("Debug", &m_Open, ImGuiWindowFlags_MenuBar);
@@ -52,11 +53,21 @@ namespace Jolt
 			ImGui::SameLine();
 			
 			ImGui::BeginGroup();
-
+			static float time = 30.0f;
 			if (ImGui::BeginChild("LayerInfo", ImVec2(0.0f, -ImGui::GetFrameHeightWithSpacing())))
 			{
 				ImGui::Text(m_Selected->GetName().c_str());
 				ImGui::Separator();
+				if (ImGui::Button("Profile Layer"))
+				{
+					LOG_INFO("Profiled {} ms!", time);
+				}
+				ImGui::SameLine();
+				ImGui::PushItemWidth(80.0f);
+				ImGui::DragFloat("##Time", &time, 5.0f, 30.0f, 1000.0f, "%.0f ms");
+				ImGui::PopItemWidth();
+
+				DrawProfileData((int)std::hash<std::string>{}(m_Selected->GetName()));
 			}
 			ImGui::EndChild();
 
@@ -100,4 +111,22 @@ namespace Jolt
 		}
 		return false;
 	}
+
+#ifdef JOLT_PROFILE
+	void DebugOverlay::DrawProfileData(int id)
+	{
+		JOLT_PROFILE_FUNCTION();
+		auto profile_data = CPUProfiler::Get().GetProfileResults(id);
+
+		for (const ProfileData& duration : profile_data)
+		{
+			ImGui::Text("%.3f ms : %s", duration.duration, duration.name);
+		}
+
+		CPUProfiler::Get().Clear(); // Clear here for now
+	}
+#else
+	void DebugOverlay::DrawProfileData(int id) { }
+#endif
+
 }
