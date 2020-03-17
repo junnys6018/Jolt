@@ -6,7 +6,7 @@ public:
 	ExampleApp()
 		:Application("Sandbox")
 	{
-		PushOverlay(new ImGuiOverlay());
+		PushOverlay(new ImGuiLayer());
 	}
 };
 

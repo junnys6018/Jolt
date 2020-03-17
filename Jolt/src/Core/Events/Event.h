@@ -30,7 +30,7 @@ namespace Jolt
 		}
 
 		template<typename T>
-		bool Dispatch(std::function<bool(T)> func)
+		bool Dispatch(std::function<bool(T&)> func)
 		{
 			if (m_Event->GetEventType() == T::GetStaticType())
 			{

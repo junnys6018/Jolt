@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Window.h"
 #include "Core/LayerStack.h"
-#include "Core/ImGui/ImGuiBuild.h"
+#include "Core/ImGui/ImGuiOverlay.h"
 #include "Core/Events/__Events__.h"
 
 #include <memory>
@@ -36,6 +36,7 @@ namespace Jolt
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		EventQueue m_EventQueue;
+		ImGuiOverlay* m_ImGuiOverlay;
 
 		float m_LastFrameTime, m_FPS;
 

@@ -39,12 +39,13 @@ namespace Jolt
 
 		PrintSystemInfomation();
 		EnableGLDebugging();
-		ImGuiInit();
+		m_ImGuiOverlay = new ImGuiOverlay();
+		m_LayerStack.PushOverlay(m_ImGuiOverlay);
 	}
 
 	Application::~Application()
 	{
-		ImGuiDestroy();
+		delete m_ImGuiOverlay;
 	}
 
 	void Application::Run()
@@ -69,10 +70,10 @@ namespace Jolt
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(timestep);
 
-			ImGuiBeginFrame();
+			m_ImGuiOverlay->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
-			ImGuiEndFrame();
+			m_ImGuiOverlay->End();
 
 			m_Window->OnUpdate();
 			ProcessEventQueue();

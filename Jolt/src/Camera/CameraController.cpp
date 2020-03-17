@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+
 #include "Core/Application.h"
 #include "Core/Input.h"
 
@@ -87,7 +89,7 @@ namespace Jolt
 
 	bool CameraController::OnMouseMovedEvent(MouseMovedEvent e)
 	{
-		if (Input::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		if (Input::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && !ImGui::GetIO().WantCaptureMouse)
 		{
 			float xpos = e.GetX();
 			float ypos = e.GetY();

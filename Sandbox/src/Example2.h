@@ -79,7 +79,7 @@ private:
 	float m_Angle, m_RotateSpeed;
 
 private:
-	bool OnKeyPressedEvent(KeyPressedEvent e)
+	bool OnKeyPressedEvent(KeyPressedEvent& e)
 	{
 		if (e.GetKeyCode() == JOLT_KEY_R)
 		{

@@ -5,10 +5,10 @@
 
 using namespace Jolt;
 
-class ImGuiOverlay : public Layer
+class ImGuiLayer : public Layer
 {
 public:
-	ImGuiOverlay()
+	ImGuiLayer()
 		:Layer("Overlay"), m_State(State::None), m_CurrentLayer(nullptr)
 	{
 
