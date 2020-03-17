@@ -43,6 +43,7 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));
 		model = glm::rotate(model, m_Angle, glm::vec3(1.0f, 1.0, 0.0f));
 
+		m_CubeShader->Bind();
 		m_CubeShader->SetMat4("u_MVP", m_Camera.GetViewProjMatrix() * model);
 
 		m_Mesh.VertexArray->Bind();

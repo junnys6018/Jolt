@@ -3,7 +3,7 @@
 
 namespace Jolt
 {
-	class EllipsoidBuilder : MeshBuilder
+	class EllipsoidBuilder : public MeshBuilder
 	{
 	public:
 		EllipsoidBuilder(float radius, uint32_t verticesPerRev = 32);

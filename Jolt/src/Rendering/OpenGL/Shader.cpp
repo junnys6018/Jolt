@@ -144,7 +144,11 @@ namespace Jolt
 	// Uniform Setting
 	GLint Shader::GetUniformLocation(const std::string& name) const
 	{
-		glUseProgram(m_ID);
+#ifdef JOLT_DEBUG
+		GLint current_shader;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader);
+		JOLT_ASSERT(current_shader == m_ID, "Did you forget to bind?");
+#endif
 		if (m_UniformLocations.find(name) != m_UniformLocations.end())
 			return m_UniformLocations[name];
 

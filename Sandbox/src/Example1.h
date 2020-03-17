@@ -41,6 +41,7 @@ public:
 		m_Texture->Bind();
 
 		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
+		m_Shader->Bind();
 		m_Shader->SetBool("u_UseTexture", m_UseTexture);
 		m_Shader->SetInt("u_Texture", 0);
 	}
