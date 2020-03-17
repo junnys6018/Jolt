@@ -7,7 +7,7 @@ class ExampleLayer2 : public Layer
 {
 public:
 	ExampleLayer2()
-		:Layer("Example 1"), m_ClearColor(0.0f), m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		:Layer("Example 2"), m_ClearColor(0.0f), m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
 			m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
 
@@ -56,7 +56,7 @@ public:
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
 		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.1f, 5.0f);
-		ImGui::Text("Press 'R' to Rotate.   FPS: %.1f", Application::Get().GetFPS());
+		ImGui::Text("Press 'R' to Rotate");
 
 		ImGui::End();
 	}

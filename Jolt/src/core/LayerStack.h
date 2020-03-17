@@ -21,6 +21,8 @@ namespace Jolt {
 	private:
 		std::vector<Layer*> m_Layers;
 		uint32_t m_OverlayInsertIndex = 0;
+
+		friend class DebugOverlay;
 	};
 
 }

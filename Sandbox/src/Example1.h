@@ -7,7 +7,7 @@ class ExampleLayer : public Layer
 {
 public:
 	ExampleLayer()
-		:Layer("Example 2"), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f), m_UseTexture(false)
+		:Layer("Example 1"), m_ClearColor(0.0f), m_VertexColor(1.0f, 0.0f, 0.0f), m_UseTexture(false)
 	{
 
 	}
@@ -75,8 +75,6 @@ public:
 		{
 			m_Shader->SetBool("u_UseTexture", m_UseTexture);
 		}
-
-		ImGui::Text("FPS: %.1f", Application::Get().GetFPS());
 
 		ImGui::End();
 	}

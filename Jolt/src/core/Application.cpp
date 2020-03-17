@@ -20,7 +20,7 @@ namespace Jolt
 	}
 
 	Application::Application(const char* name)
-		:m_LastFrameTime(0.0f), m_FPS(60.0f)
+		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f)
 	{
 		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
@@ -39,13 +39,12 @@ namespace Jolt
 
 		PrintSystemInfomation();
 		EnableGLDebugging();
-		m_ImGuiOverlay = new ImGuiOverlay();
-		m_LayerStack.PushOverlay(m_ImGuiOverlay);
+		m_LayerStack.PushOverlay(&m_ImGuiOverlay);
+		m_LayerStack.PushOverlay(&m_DebugOverlay);
 	}
 
 	Application::~Application()
 	{
-		delete m_ImGuiOverlay;
 	}
 
 	void Application::Run()
@@ -70,10 +69,10 @@ namespace Jolt
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(timestep);
 
-			m_ImGuiOverlay->Begin();
+			m_ImGuiOverlay.Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
-			m_ImGuiOverlay->End();
+			m_ImGuiOverlay.End();
 
 			m_Window->OnUpdate();
 			ProcessEventQueue();
@@ -114,24 +113,24 @@ namespace Jolt
 			dispatch.Dispatch<EngineLayerPushedEvent>([this](EngineLayerPushedEvent e) -> bool
 			{
 				m_LayerStack.PushLayer(e.GetLayer());
-				return true;
+				return false;
 			});
 
 			dispatch.Dispatch<EngineOverlayPushedEvent>([this](EngineOverlayPushedEvent e) -> bool
 			{
 				m_LayerStack.PushOverlay(e.GetLayer());
-				return true;
+				return false;
 			});
 			dispatch.Dispatch<EngineLayerPoppedEvent>([this](EngineLayerPoppedEvent e) -> bool
 			{
 				m_LayerStack.PopLayer(e.GetLayer());
-				return true;
+				return false;
 			});
 
 			dispatch.Dispatch<EngineOverlayPoppedEvent>([this](EngineOverlayPoppedEvent e) -> bool
 			{
 				m_LayerStack.PopOverlay(e.GetLayer());
-				return true;
+				return false;
 			});
 
 
@@ -142,7 +141,7 @@ namespace Jolt
 				layer->OnEvent(e);
 			}
 
-			//LOG_INFO(e.EventInfo());
+			//LOG_INFO(e->EventInfo());
 
 			// TODO: Implement Event data pool instead of heap allocating every event
 			delete e;

@@ -9,7 +9,7 @@ class ImGuiLayer : public Layer
 {
 public:
 	ImGuiLayer()
-		:Layer("Overlay"), m_State(State::None), m_CurrentLayer(nullptr)
+		:Layer("ExampleOverlay"), m_State(State::None), m_CurrentLayer(nullptr)
 	{
 
 	}

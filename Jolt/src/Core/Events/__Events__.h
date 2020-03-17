@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Event.h"
-#include "KeyEvent.h"
-#include "MouseEvent.h"
-#include "ApplicationEvent.h"
-#include "EngineEvent.h"
-#include "EventQueue.h"
+#include "Core/Events/Event.h"
+#include "Core/Events/KeyEvent.h"
+#include "Core/Events/MouseEvent.h"
+#include "Core/Events/ApplicationEvent.h"
+#include "Core/Events/EngineEvent.h"
+#include "Core/Events/EventQueue.h"
 
-#include "KeyCodes.h"
+#include "Core/Events/KeyCodes.h"

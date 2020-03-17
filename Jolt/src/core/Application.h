@@ -4,6 +4,8 @@
 #include "Core/ImGui/ImGuiOverlay.h"
 #include "Core/Events/__Events__.h"
 
+#include "Debug/DebugOverlay.h"
+
 #include <memory>
 
 namespace Jolt
@@ -36,10 +38,13 @@ namespace Jolt
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		EventQueue m_EventQueue;
-		ImGuiOverlay* m_ImGuiOverlay;
+		ImGuiOverlay m_ImGuiOverlay;
+		DebugOverlay m_DebugOverlay;
 
 		float m_LastFrameTime, m_FPS;
 
 		static Application* s_Instance;
+
+		friend class DebugOverlay;
 	};
 }
