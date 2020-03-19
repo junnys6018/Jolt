@@ -35,8 +35,10 @@ public:
 		JOLT_PROFILE_FUNCTION();
 
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
-		m_Camera.OnUpdate(ts);
-
+		{
+			JOLT_PROFILE_SCOPE("CameraController::OnUpdate");
+			m_Camera.OnUpdate(ts);
+		}
 		if (m_Rotating)
 		{
 			m_Angle += ts * m_RotateSpeed;

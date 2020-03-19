@@ -1,6 +1,6 @@
 workspace "Jolt"
 	architecture "x64"
-	configurations {"Debug", "Release"}
+	configurations {"Debug", "Distribution", "Release"}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.architecture}"
 
@@ -51,9 +51,14 @@ project "Jolt"
 		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
 		symbols "On"
 
-	filter "configurations:Release"
-		defines { "JOLT_RELEASE", "JOLT_PROFILE" }
+	filter "configurations:Distribution"
+		defines { "JOLT_DISTRIBUTION", "JOLT_PROFILE" }
 		optimize "On"
+
+	filter "configurations:Release"
+		defines { "JOLT_RELEASE" }
+		optimize "On"
+
 
 
 -- Dependencies
@@ -102,6 +107,10 @@ project "Sandbox"
 		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
 		symbols "On"
 
+	filter "configurations:Distribution"
+		defines { "JOLT_DISTRIBUTION", "JOLT_PROFILE" }
+		optimize "On"
+
 	filter "configurations:Release"
-		defines { "JOLT_RELEASE", "JOLT_PROFILE" }
+		defines { "JOLT_RELEASE" }
 		optimize "On"

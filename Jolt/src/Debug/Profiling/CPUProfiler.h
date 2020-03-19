@@ -1,14 +1,10 @@
 #pragma once
 #include "pch.h"
+#include "Instrumentor.h"
+#include "ProfileData.h"
 
 namespace Jolt
 {
-	struct ProfileData
-	{
-		const char* name;
-		float duration;
-	};
-
 	class CPUProfiler
 	{
 	public:
@@ -20,10 +16,18 @@ namespace Jolt
 
 		void PushProfileResult(int id, ProfileData&& data);
 		const std::vector<ProfileData>& GetProfileResults(int id);
+
+		void BeginInstrumentation(int id, long long duration);
+
 		inline void Clear() { m_ProfileResults.clear(); }
 	private:
 		std::map<int, std::vector<ProfileData>> m_ProfileResults;
 		static CPUProfiler* s_Instance;
+
+		Instrumentor m_Instrumentor;
+		bool m_Instrument;
+		int m_ID;
+		long long m_EndTime;
 
 		CPUProfiler() = default;
 	};

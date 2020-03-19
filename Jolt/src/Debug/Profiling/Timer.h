@@ -4,7 +4,7 @@
 
 #ifdef JOLT_PROFILE
 #define JOLT_PROFILE_SCOPE(name) Timer timer##__LINE__((int)std::hash<std::string>{}(this->GetName()), name)
-#define JOLT_PROFILE_FUNCTION() JOLT_PROFILE_SCOPE(__FUNCSIG__)
+#define JOLT_PROFILE_FUNCTION() JOLT_PROFILE_SCOPE(__FUNCTION__)
 #else
 #define JOLT_PROFILE_SCOPE(name)
 #define JOLT_PROFILE_FUNCTION()
@@ -36,9 +36,7 @@ namespace Jolt
 
 			m_Stopped = true;
 
-			float duration = (float)(end - start) * 0.001f;
-
-			CPUProfiler::Get().PushProfileResult(m_ID, { m_Name,duration });
+			CPUProfiler::Get().PushProfileResult(m_ID, { m_Name,start,end });
 		}
 
 	private:
