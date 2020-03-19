@@ -42,6 +42,7 @@ namespace Jolt
 
 	void CPUProfiler::BeginInstrumentation(int id, long long duration)
 	{
+		JOLT_ASSERT(!m_Instrument, "Instrumentation Session Already begun");
 		m_Instrumentor.BeginSession();
 
 		m_Instrument = true;

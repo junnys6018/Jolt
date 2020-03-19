@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "Rendering/OpenGL/OpenGLDebug.h"
 #include "Input.h"
+#include "Debug/Profiling/Timer.h"
 
 namespace Jolt
 {
@@ -56,6 +57,10 @@ namespace Jolt
 		float LastFPSTimer = (float)glfwGetTime();
 		while (!m_Window->WindowShouldClose())
 		{
+#ifdef JOLT_PROFILE
+			JOLT_PROFILE_FUNCTION();
+#endif
+
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;

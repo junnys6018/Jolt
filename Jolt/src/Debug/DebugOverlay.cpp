@@ -62,7 +62,7 @@ namespace Jolt
 				if (ImGui::Button("Profile Layer"))
 				{
 					LOG_INFO("Profiled {} ms!", time);
-					CPUProfiler::Get().BeginInstrumentation((int)std::hash<std::string>{}(m_Selected->GetName()), (long long)(time * 1000.0f));
+					CPUProfiler::Get().BeginInstrumentation((int)std::hash<void*>{}((void*)m_Selected), (long long)(time * 1000.0f));
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("Profile Application"))
@@ -75,7 +75,7 @@ namespace Jolt
 				ImGui::DragFloat("##Time", &time, 5.0f, 30.0f, 1000.0f, "%.0f ms");
 				ImGui::PopItemWidth();
 
-				DrawProfileData((int)std::hash<std::string>{}(m_Selected->GetName()));
+				DrawProfileData((int)std::hash<void*>{}((void*)m_Selected));
 #endif
 			}
 			ImGui::EndChild();
@@ -131,11 +131,22 @@ namespace Jolt
 	{
 		JOLT_PROFILE_FUNCTION();
 		auto& profile_data = CPUProfiler::Get().GetProfileResults(id);
+		ImGui::Columns(2, "mycol");
+		ImGui::SetColumnWidth(0, 80.0f);
+		ImGui::Separator();
+		ImGui::Text("Time (ms)"); ImGui::NextColumn();
+		ImGui::Text("Name"); ImGui::NextColumn();
+		ImGui::Separator();
 
 		for (const ProfileData& duration : profile_data)
 		{
-			ImGui::Text("%.3f ms : %s", (duration.end - duration.start) * 0.001f, duration.name);
+			ImGui::Text("%.3f", (duration.end - duration.start) * 0.001f);
+			ImGui::NextColumn();
+			ImGui::Text(duration.name);
+			ImGui::NextColumn();
 		}
+		ImGui::Columns(1);
+		ImGui::Separator();
 
 		CPUProfiler::Get().Clear(); // Clear here for now
 	}

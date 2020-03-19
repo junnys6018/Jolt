@@ -18,4 +18,3 @@
 #include "Camera/CameraController.h"
 
 #include "Debug/Profiling/Timer.h"
-#include "Debug/Profiling/CPUProfiler.h"
