@@ -4,3 +4,10 @@
 [submodule "Jolt/vendor/spdlog"]
 	path = Jolt/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Jolt/vendor/GLFW"]
+	path = Jolt/vendor/GLFW
+	url = https://github.com/junnys6018/glfw
+[submodule "Jolt/vendor/ImGui"]
+	path = Jolt/vendor/ImGui
+	url = https://github.com/junnys6018/imgui
+	branch = docking
