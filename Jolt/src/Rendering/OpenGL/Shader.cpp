@@ -5,12 +5,6 @@
 
 namespace Jolt
 {
-	struct ShaderSource
-	{
-		std::string VertexSource;
-		std::string FragmentSource;
-	};
-
 	static ShaderSource ReadFileAsString(const std::string& filepath)
 	{
 		ShaderSource source;
@@ -53,6 +47,23 @@ namespace Jolt
 		Shader* shader = new Shader();
 		ShaderSource source = ReadFileAsString(shaderPath);
 
+		shader->m_ID = CreateProgram(shader, source);
+
+		return shader;
+	}
+
+	Shader* Shader::CreateFromChar(const char* vertexSrc, const char* fragmentSrc)
+	{
+		Shader* shader = new Shader();
+		ShaderSource source = { std::string(vertexSrc),std::string(fragmentSrc) };
+
+		shader->m_ID = CreateProgram(shader, source);
+
+		return shader;
+	}
+
+	GLuint Shader::CreateProgram(Shader* shader, const ShaderSource& source)
+	{
 		GLuint program = glCreateProgram();
 
 		GLuint vertexShader = CompileShader(GL_VERTEX_SHADER, source.VertexSource);
@@ -87,8 +98,7 @@ namespace Jolt
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
-		shader->m_ID = program;
-		return shader;
+		return program;
 	}
 
 	void Shader::Bind()
