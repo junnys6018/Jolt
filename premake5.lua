@@ -116,3 +116,34 @@ project "Sandbox"
 	filter "configurations:Release"
 		defines { "JOLT_RELEASE" }
 		optimize "On"
+
+
+project "Util"
+	location "Util"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17" 
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+	}
+
+	postbuildcommands
+	{
+		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%{prj.name}.exe"
+	}
+
+	filter "configurations:Debug"
+		symbols "On"
+
+	filter "configurations:Distribution"
+		symbols "On"
+
+	filter "configurations:Release"
+		optimize "On"
+

@@ -20,7 +20,8 @@ public:
 		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 64U);
 		//CuboidBuilder builder(2.0f);
 
-		m_Mesh = builder.GenerateMesh();
+		//m_Mesh = builder.GenerateMesh();
+		m_Mesh = CreateFromFile("data");
 		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
 	}
 
