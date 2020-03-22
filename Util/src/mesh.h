@@ -1,6 +1,16 @@
 #pragma once	
 #include <vector>
 
+#define BIT(x) 1 << x
+
+typedef int ModelFlags;
+enum ModelFlags_
+{
+	ModelFlagsPosition = 0,
+	ModelFlagsNormal = BIT(0),
+	ModelFlagsTextureCoordinate = BIT(1)
+};
+
 struct vec3
 {
 	float x, y, z;
@@ -35,30 +45,23 @@ namespace std
 	};
 }
 
-struct Vertex
-{
-	vec3 position;
-	vec2 texCoord;
-	vec3 normal;
-	Vertex(vec3 pos, vec2 tex, vec3 norm)
-		:position(pos), texCoord(tex), normal(norm) {}
-};
-
-
 void BufferObj(const char* filepath, 
 			   std::vector<vec3>& vPos, 
 			   std::vector<vec3>& vNorm, 
 			   std::vector<vec2>& vTex, 
-			   std::vector<Index>& iBuf);
+			   std::vector<Index>& iBuf,
+			   ModelFlags& modelFlags);
 
 void ExpandObj(std::vector<vec3>& vPos,
 			   std::vector<vec3>& vNorm,
 			   std::vector<vec2>& vTex,
 			   std::vector<Index>& iBuf,
-			   std::vector<Vertex>& vertexBuffer,
-			   std::vector<unsigned int>& indexBuffer);
+			   std::vector<float>& vertexBuffer,
+			   std::vector<unsigned int>& indexBuffer,
+			   const ModelFlags modelFlags);
 
 void WriteToFile(const std::string& filename,
-				 const std::vector<Vertex>& vertexBuffer,
-				 const std::vector<unsigned>& indexBuffer);
+	             const std::vector<float>& vertexBuffer,
+	             const std::vector<unsigned>& indexBuffer,
+	             const ModelFlags modelFlags);
 

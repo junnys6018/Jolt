@@ -10,6 +10,9 @@ namespace Jolt
 	{
 	public:
 		VertexLayout(std::initializer_list<unsigned int> AttributeLayout);
+
+		void PushAttribute(unsigned int float_count);
+
 		friend class VertexArray;
 	private:
 		std::vector<unsigned int> m_AttributeLayout;

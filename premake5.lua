@@ -138,6 +138,8 @@ project "Util"
 		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%{prj.name}.exe"
 	}
 
+	defines { "_CRT_SECURE_NO_WARNINGS" }
+
 	filter "configurations:Debug"
 		symbols "On"
 

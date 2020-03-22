@@ -15,19 +15,15 @@ public:
 
 	virtual void OnAttach() override
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_DEPTH_TEST);
 
-		EllipsoidBuilder builder(5.0f, 3.0f, 3.0f, 64U);
-		//CuboidBuilder builder(2.0f);
-
-		//m_Mesh = builder.GenerateMesh();
 		m_Mesh = CreateFromFile("data");
 		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
 	}
 
 	virtual void OnDetach() override
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_DEPTH_TEST);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
@@ -45,7 +41,7 @@ public:
 			m_Angle += ts * m_RotateSpeed;
 		}
 
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
 		model = glm::rotate(model, m_Angle, glm::vec3(1.0f, 1.0, 0.0f));
 
 		m_CubeShader->Bind();

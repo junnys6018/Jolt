@@ -8,4 +8,9 @@ namespace Jolt
 	{
 
 	}
+
+	void VertexLayout::PushAttribute(unsigned int float_count)
+	{
+		m_AttributeLayout.push_back(float_count);
+	}
 }

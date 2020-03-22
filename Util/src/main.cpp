@@ -24,15 +24,16 @@ int main(int argc, char** argv)
 		std::vector<vec3> vNorm;
 		std::vector<vec2> vTex;
 		std::vector<Index> iBuf;
+		ModelFlags modelFlags;
 
-		BufferObj(argv[2], vPos, vNorm, vTex, iBuf);
+		BufferObj(argv[2], vPos, vNorm, vTex, iBuf, modelFlags);
 
-		std::vector<Vertex> vertexBuffer;
+		std::vector<float> vertexBuffer;
 		std::vector<unsigned int> indexBuffer;
 
-		ExpandObj(vPos, vNorm, vTex, iBuf, vertexBuffer, indexBuffer);
+		ExpandObj(vPos, vNorm, vTex, iBuf, vertexBuffer, indexBuffer, modelFlags);
 
-		WriteToFile("data", vertexBuffer, indexBuffer);
+		WriteToFile("data", vertexBuffer, indexBuffer, modelFlags);
 	}
 	else
 	{

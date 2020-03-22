@@ -6,11 +6,12 @@
 
 #include "mesh.h"
 
-void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf)
+void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf, ModelFlags& modelFlags)
 {
 	std::ifstream file(filepath);
 	std::string line;
 
+	bool first_face = true;
 	unsigned int fIndex = 0; // points to 1 off the last index
 	while (std::getline(file, line))
 	{
@@ -37,12 +38,39 @@ void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>&
 		}
 		else if (id == "f")
 		{
+			if (first_face)
+			{
+				first_face = false;
+				modelFlags = ModelFlagsPosition;
+				if (vNorm.size() != 0)
+					modelFlags |= ModelFlagsNormal;
+				if (vTex.size() != 0)
+					modelFlags |= ModelFlagsTextureCoordinate;
+			}
 			std::string data;
 			int iterations = 0;
 			while (s >> data)
 			{
 				int v, vt, vn;
-				std::sscanf(data.c_str(), "%i/%i/%i", &v, &vt, &vn);
+				if ((modelFlags & ModelFlagsNormal) && (modelFlags & ModelFlagsTextureCoordinate))
+				{
+					std::sscanf(data.c_str(), "%i/%i/%i", &v, &vt, &vn);
+				}
+				else if (modelFlags & ModelFlagsNormal)
+				{
+					vt = 1;
+					std::sscanf(data.c_str(), "%i//%i", &v, &vn);
+				}
+				else if (modelFlags & ModelFlagsTextureCoordinate)
+				{
+					vn = 1;
+					std::sscanf(data.c_str(), "%i/%i", &v, &vt);
+				}
+				else
+				{
+					vn = 1; vt = 1;
+					std::sscanf(data.c_str(), "%i", &v);
+				}
 				iBuf.push_back({ v - 1, vt - 1, vn - 1 });
 				iterations++;
 			}
@@ -64,7 +92,8 @@ void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>&
 	}
 }
 
-void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf, std::vector<Vertex>& vertexBuffer, std::vector<unsigned int>& indexBuffer)
+void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf,
+	std::vector<float>& vertexBuffer, std::vector<unsigned int>& indexBuffer, const ModelFlags modelFlags)
 {
 	std::unordered_map<Index, unsigned int> map;
 	unsigned int last_index = 0;
@@ -76,7 +105,24 @@ void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<ve
 			unsigned int vIndex = index.v >= 0 ? index.v : vPos.size() + index.v + 1;
 			unsigned int vtIndex = index.vt >= 0 ? index.vt : vTex.size() + index.vt + 1;
 			unsigned int vnIndex = index.vn >= 0 ? index.vn : vNorm.size() + index.vn + 1;
-			vertexBuffer.push_back({ vPos[vIndex], vTex[vtIndex], vNorm[vnIndex] });
+
+			vertexBuffer.emplace_back(vPos[vIndex].x);
+			vertexBuffer.emplace_back(vPos[vIndex].y);
+			vertexBuffer.emplace_back(vPos[vIndex].z);
+
+			if (modelFlags & ModelFlagsTextureCoordinate)
+			{
+				vertexBuffer.emplace_back(vTex[vtIndex].x);
+				vertexBuffer.emplace_back(vTex[vtIndex].y);
+			}
+
+			if (modelFlags & ModelFlagsNormal)
+			{
+				vertexBuffer.emplace_back(vNorm[vnIndex].x);
+				vertexBuffer.emplace_back(vNorm[vnIndex].y);
+				vertexBuffer.emplace_back(vNorm[vnIndex].z);
+			}
+
 			indexBuffer.emplace_back(last_index);
 			map.insert(std::make_pair(index, last_index));
 			++last_index;
@@ -86,17 +132,31 @@ void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<ve
 	}
 }
 
-void WriteToFile(const std::string& filename, const std::vector<Vertex>& vertexBuffer, const std::vector<unsigned>& indexBuffer)
+void WriteToFile(const std::string& filename, const std::vector<float>& vertexBuffer,
+	const std::vector<unsigned>& indexBuffer, const ModelFlags modelFlags)
 {
 	std::ofstream file(filename, std::ios::binary);
 	// Header
-	std::size_t size = vertexBuffer.size();
-	file.write((char*)&size, sizeof(std::size_t));
-	size = indexBuffer.size();
-	file.write((char*)&size, sizeof(std::size_t));
+	struct
+	{
+		// { pos, tex, norm }
+		char vertex_attribs[3] = { 'y','n','n' };
+		std::size_t vertex_buffer_size;
+		std::size_t index_count;
+	} header;
+
+	if (modelFlags & ModelFlagsTextureCoordinate)
+		header.vertex_attribs[1] = 'y';
+	if (modelFlags & ModelFlagsNormal)
+		header.vertex_attribs[2] = 'y';
+
+	header.vertex_buffer_size = vertexBuffer.size();
+	header.index_count = indexBuffer.size();
+
+	file.write((char*)& header, sizeof(header));
 
 	// Body
-	file.write((char*)vertexBuffer.data(), sizeof(Vertex) * vertexBuffer.size());
+	file.write((char*)vertexBuffer.data(), sizeof(float) * vertexBuffer.size());
 	file.write((char*)indexBuffer.data(), sizeof(unsigned) * indexBuffer.size());
 
 	file.close();
