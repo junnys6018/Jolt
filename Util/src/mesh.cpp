@@ -3,18 +3,35 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
+#include <thread>
 
 #include "mesh.h"
+#include "ProgressBar.h"
 
 void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf, ModelFlags& modelFlags)
 {
 	std::ifstream file(filepath);
+
+	file.seekg(0, std::ios_base::end);
+	auto size = file.tellg();
+	file.seekg(0, std::ios_base::beg);
+
+	double progress = 0.0;
+	std::thread th(bar, &progress, "Loading File");
+
 	std::string line;
 
 	bool first_face = true;
+	int iterations = 0;
 	unsigned int fIndex = 0; // points to 1 off the last index
-	while (std::getline(file, line))
+	while (iterations++, std::getline(file, line))
 	{
+		if (iterations % 1000 == 0)
+		{
+			auto pos = file.tellg();
+			progress = (double)pos / (int)size;
+		}
+
 		std::stringstream s(line);
 		std::string id;
 		s >> id;
@@ -90,6 +107,8 @@ void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>&
 			fIndex += 3;
 		}
 	}
+	progress = 1.0;
+	th.join();
 }
 
 void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf,

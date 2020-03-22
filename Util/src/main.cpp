@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <chrono>
 #include "mesh.h"
 
 void Useage(const char* name)
@@ -20,6 +20,7 @@ int main(int argc, char** argv)
 
 	if (strcmp(argv[1], "mesh "))
 	{
+		auto beg = std::chrono::high_resolution_clock::now();
 		std::vector<vec3> vPos;
 		std::vector<vec3> vNorm;
 		std::vector<vec2> vTex;
@@ -34,6 +35,10 @@ int main(int argc, char** argv)
 		ExpandObj(vPos, vNorm, vTex, iBuf, vertexBuffer, indexBuffer, modelFlags);
 
 		WriteToFile("data", vertexBuffer, indexBuffer, modelFlags);
+		auto end = std::chrono::high_resolution_clock::now();
+
+		auto duration = end - beg;
+		std::cout << "Done! (" << (float)duration.count() / 1000000 << "ms)\n";
 	}
 	else
 	{
