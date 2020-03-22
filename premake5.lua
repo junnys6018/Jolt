@@ -135,7 +135,7 @@ project "Util"
 
 	postbuildcommands
 	{
-		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%{prj.name}.exe"
+		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%Jolt.exe"
 	}
 
 	defines { "_CRT_SECURE_NO_WARNINGS" }
