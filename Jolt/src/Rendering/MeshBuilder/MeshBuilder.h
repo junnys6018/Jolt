@@ -1,8 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "Rendering/OpenGL/VertexArray.h"
-#include "Rendering/OpenGL/VertexBuffer.h"
-#include "Rendering/OpenGL/IndexBuffer.h"
+#include "Rendering/Mesh.h"
 
 namespace Jolt
 {
@@ -12,20 +10,6 @@ namespace Jolt
 		MeshPropsNormals = BIT(0),
 		MeshPropsTextureCoords = BIT(1),
 		MeshPropsTangents = BIT(2)
-	};
-
-	struct Mesh
-	{
-	public:
-		Mesh() = default;
-		Mesh(VertexBuffer* VBuf, IndexBuffer* IBuf, VertexArray* VAO)
-			:VertexBuffer(VBuf), IndexBuffer(IBuf), VertexArray(VAO)
-		{
-
-		}
-		std::unique_ptr<VertexBuffer> VertexBuffer;
-		std::unique_ptr<IndexBuffer> IndexBuffer;
-		std::unique_ptr<VertexArray> VertexArray;
 	};
 
 	class MeshBuilder

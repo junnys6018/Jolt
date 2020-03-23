@@ -163,8 +163,7 @@ namespace Jolt
 			return m_UniformLocations[name];
 
 		GLint location = glGetUniformLocation(m_ID, name.c_str());
-		if (location == -1)
-			LOG_ERROR("{0} is not a vaild uniform", name);
+		JOLT_ASSERT(location != -1, "{1} is not a vaild uniform", name);
 		m_UniformLocations[name] = location;
 		return location;
 	}

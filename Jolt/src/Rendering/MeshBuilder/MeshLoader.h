@@ -1,5 +1,5 @@
 #pragma once
-#include "MeshBuilder.h"
+#include "Rendering/Mesh.h"
 
 namespace Jolt
 {

@@ -7,8 +7,8 @@ class ExampleLayer2 : public Layer
 {
 public:
 	ExampleLayer2()
-		:Layer("Example 2"), m_ClearColor(0.0f), m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
-			m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
+		:Layer("Example 2"), m_ClearColor(0.0f), m_Model(CreateFromFile("data"), MatDummy()),
+		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
 
 	}
@@ -17,7 +17,6 @@ public:
 	{
 		glEnable(GL_DEPTH_TEST);
 
-		m_Mesh = CreateFromFile("data");
 		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
 	}
 
@@ -44,11 +43,11 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
 		model = glm::rotate(model, m_Angle, glm::vec3(1.0f, 1.0, 0.0f));
 
-		m_CubeShader->Bind();
-		m_CubeShader->SetMat4("u_MVP", m_Camera.GetViewProjMatrix() * model);
+		m_Model.SetTransform(model);
 
-		m_Mesh.VertexArray->Bind();
-		glDrawElements(GL_TRIANGLES, m_Mesh.IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+		Renderer::BeginScene<LightDummy>(LightDummy(), m_CubeShader.get(), m_Camera.GetCamera());
+		Renderer::Submit<MatDummy>(m_Model);
+		Renderer::EndScene();
 	}
 
 	virtual void OnImGuiRender() override
@@ -74,7 +73,7 @@ public:
 private:
 	glm::vec3 m_ClearColor;
 	std::unique_ptr<Shader> m_CubeShader;
-	Mesh m_Mesh;
+	Model<MatDummy> m_Model;
 	CameraController m_Camera;
 
 	bool m_Rotating;
