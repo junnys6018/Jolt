@@ -6,7 +6,7 @@ namespace Jolt
 	class LightDummy : public Light	
 	{
 	public:
-		virtual void SetUniforms(Shader& shader) override
+		virtual void SetUniforms(Shader& shader, Camera& camera) override
 		{
 
 		}

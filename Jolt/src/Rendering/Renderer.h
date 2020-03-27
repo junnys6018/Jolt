@@ -19,7 +19,7 @@ namespace Jolt
 
 			shader->Bind();
 
-			light.SetUniforms(*shader);
+			light.SetUniforms(*shader, camera);
 			shader->SetMat4("u_View", camera.m_View);
 			shader->SetMat4("u_Proj", camera.m_Proj);
 

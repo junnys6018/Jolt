@@ -57,9 +57,7 @@ namespace Jolt
 		float LastFPSTimer = (float)glfwGetTime();
 		while (!m_Window->WindowShouldClose())
 		{
-#ifdef JOLT_PROFILE
 			JOLT_PROFILE_FUNCTION();
-#endif
 
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
