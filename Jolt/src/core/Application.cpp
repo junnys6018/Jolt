@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Debug/Profiling/Timer.h"
 
+
 namespace Jolt
 {
 	Application* Application::s_Instance = nullptr;
@@ -21,7 +22,7 @@ namespace Jolt
 	}
 
 	Application::Application(const char* name)
-		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f)
+		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f), m_Ticker(1000.0f)
 	{
 		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
@@ -54,7 +55,6 @@ namespace Jolt
 	void Application::Run()
 	{
 		int FrameCount = 0;
-		float LastFPSTimer = (float)glfwGetTime();
 		while (!m_Window->WindowShouldClose())
 		{
 			JOLT_PROFILE_FUNCTION();
@@ -64,11 +64,11 @@ namespace Jolt
 			m_LastFrameTime = time;
 
 			FrameCount++;
-			if (time - LastFPSTimer > 1.0f) // Update every second
+			if (m_Ticker.IsReady()) // Update every second
 			{
-				m_FPS = (float)FrameCount / (time - LastFPSTimer);
+				float duration = m_Ticker.Reset() * 0.001f;
+				m_FPS = (float)FrameCount / duration;
 				FrameCount = 0;
-				LastFPSTimer = time;
 			}
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -31,13 +31,9 @@ namespace Jolt
 		}
 	}
 
-	const std::vector<ProfileData>& CPUProfiler::GetProfileResults(int id)
+	std::map<int, std::vector<ProfileData>> CPUProfiler::GetProfileResults()
 	{
-		if (m_ProfileResults.find(id) == m_ProfileResults.end())
-		{
-			m_ProfileResults.emplace(id, std::vector<ProfileData>());
-		}
-		return m_ProfileResults.at(id);
+		return m_ProfileResults;
 	}
 
 	void CPUProfiler::BeginInstrumentation(int id, long long duration)

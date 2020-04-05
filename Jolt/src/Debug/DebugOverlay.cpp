@@ -2,6 +2,7 @@
 #include "DebugOverlay.h"
 #include "Core/Application.h"
 #include "Profiling/Timer.h"
+#include "Core/Ticker.h"
 #include <imgui.h>
 
 namespace Jolt
@@ -130,7 +131,14 @@ namespace Jolt
 	void DebugOverlay::DrawProfileData(int id)
 	{
 		JOLT_PROFILE_FUNCTION();
-		auto& profile_data = CPUProfiler::Get().GetProfileResults(id);
+		static std::map<int, std::vector<ProfileData>> cached_profile_results = CPUProfiler::Get().GetProfileResults();
+		static Ticker ticker(400.0f); // Update every 400ms
+		if (ticker.IsReady())
+		{
+			ticker.Reset();
+			cached_profile_results = CPUProfiler::Get().GetProfileResults();
+		}
+		auto& profile_data = cached_profile_results[id];
 		ImGui::Columns(2, "mycol");
 		float width = ImGui::GetWindowContentRegionWidth();
 		ImGui::SetColumnWidth(0, width - 80.0f);

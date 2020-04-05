@@ -42,7 +42,7 @@ namespace Jolt
 	private:
 		int m_ID;
 		const char* m_Name;
-		std::chrono::time_point<std::chrono::steady_clock> m_StartTimePoint;
+		std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimePoint;
 		bool m_Stopped;
 	};
 }
