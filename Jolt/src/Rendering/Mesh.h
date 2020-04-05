@@ -14,10 +14,18 @@ namespace Jolt
 		{
 
 		}
-		Mesh(Mesh& other)
+
+		Mesh(Mesh&& other)
 			:VertexBuffer(other.VertexBuffer.release()), IndexBuffer(other.IndexBuffer.release()), VertexArray(other.VertexArray.release())
 		{
 
+		}
+
+		Mesh& operator=(Mesh&& other)
+		{
+			VertexBuffer.reset(other.VertexBuffer.release());
+			IndexBuffer.reset(other.IndexBuffer.release());
+			VertexArray.reset(other.VertexArray.release());
 		}
 
 		std::unique_ptr<VertexBuffer> VertexBuffer;

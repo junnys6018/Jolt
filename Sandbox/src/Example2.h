@@ -8,6 +8,7 @@ class ExampleLayer2 : public Layer
 public:
 	ExampleLayer2()
 		:Layer("Example 2"), m_ClearColor(0.0f), m_Model(CreateFromFile("data"), MatGooch(glm::vec3(1.0f))),
+		m_Cube(CuboidBuilder(0.1f).GenerateMesh(), MatDummy()),
 		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
 
@@ -17,7 +18,10 @@ public:
 	{
 		glEnable(GL_DEPTH_TEST);
 
-		m_CubeShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Cube.glsl"));
+		m_GoochShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Gooch.glsl"));
+		m_FlatColorShader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
+		m_FlatColorShader->Bind();
+		m_FlatColorShader->SetVec3("u_Color", 1.0f, 1.0f, 1.0f);
 	}
 
 	virtual void OnDetach() override
@@ -47,9 +51,17 @@ public:
 
 		glm::vec3 lightpos = glm::vec3(sinf(glfwGetTime()), 0.0f, cosf(glfwGetTime()));
 
-		Renderer::BeginScene(LightPoint(glm::vec3(1.0f), lightpos), m_CubeShader.get(), m_Camera.GetCamera());
-		Renderer::Submit(m_Model);
-		Renderer::EndScene();
+		{
+			JOLT_PROFILE_SCOPE("Renderer::Draw");
+			Renderer::BeginScene(LightPoint(glm::vec3(1.0f), lightpos), m_GoochShader.get(), m_Camera.GetCamera());
+			Renderer::Submit(m_Model);
+			Renderer::EndScene();
+
+			Renderer::BeginScene(LightDummy(), m_FlatColorShader.get(), m_Camera.GetCamera());
+			m_Cube.SetTransform(glm::translate(glm::mat4(1.0f), lightpos));
+			Renderer::Submit(m_Cube);
+			Renderer::EndScene();
+		}
 	}
 
 	virtual void OnImGuiRender() override
@@ -74,8 +86,9 @@ public:
 
 private:
 	glm::vec3 m_ClearColor;
-	std::unique_ptr<Shader> m_CubeShader;
+	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
 	DrawData<MatGooch> m_Model;
+	DrawData<MatDummy> m_Cube;
 	CameraController m_Camera;
 
 	bool m_Rotating;

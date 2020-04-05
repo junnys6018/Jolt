@@ -9,7 +9,7 @@ namespace Jolt
 	{
 	public:
 		DrawData(Mesh mesh, Mat material)
-			:m_Mesh(mesh), m_Material(material)
+			:m_Mesh(std::move(mesh)), m_Material(material)
 		{
 
 		}
