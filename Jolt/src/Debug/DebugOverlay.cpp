@@ -132,19 +132,28 @@ namespace Jolt
 		JOLT_PROFILE_FUNCTION();
 		auto& profile_data = CPUProfiler::Get().GetProfileResults(id);
 		ImGui::Columns(2, "mycol");
-		ImGui::SetColumnWidth(0, 80.0f);
+		float width = ImGui::GetWindowContentRegionWidth();
+		ImGui::SetColumnWidth(0, width - 80.0f);
 		ImGui::Separator();
-		ImGui::Text("Time (ms)"); ImGui::NextColumn();
 		ImGui::Text("Name"); ImGui::NextColumn();
+		ImGui::Text("Time (ms)"); ImGui::NextColumn();
 		ImGui::Separator();
 
+		float total = 0.0f;
 		for (const ProfileData& duration : profile_data)
 		{
-			ImGui::Text("%.3f", (duration.end - duration.start) * 0.001f);
-			ImGui::NextColumn();
+			float ms_time = (duration.end - duration.start) * 0.001f;
+			total += ms_time;
 			ImGui::Text(duration.name);
 			ImGui::NextColumn();
+			ImGui::Text("%.3f", ms_time);
+			ImGui::NextColumn();
 		}
+		ImGui::Separator();
+		ImGui::Text("Total time");
+		ImGui::NextColumn();
+		ImGui::Text("%.3f", total);
+		ImGui::NextColumn();
 		ImGui::Columns(1);
 		ImGui::Separator();
 

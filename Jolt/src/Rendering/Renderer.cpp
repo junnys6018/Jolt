@@ -4,5 +4,5 @@
 namespace Jolt
 {
 	bool Renderer::s_BeginScene = false;
-	Shader* Renderer::s_Shader = nullptr;
+	Shader* Renderer::s_ActiveShader = nullptr;
 }

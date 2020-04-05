@@ -75,7 +75,7 @@ public:
 private:
 	glm::vec3 m_ClearColor;
 	std::unique_ptr<Shader> m_CubeShader;
-	Model<MatGooch> m_Model;
+	DrawData<MatGooch> m_Model;
 	CameraController m_Camera;
 
 	bool m_Rotating;

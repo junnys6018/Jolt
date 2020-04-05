@@ -11,7 +11,7 @@ namespace Jolt
 		s_Instance = new CPUProfiler();
 	}
 
-	void CPUProfiler::PushProfileResult(int id, ProfileData&& data)
+	void CPUProfiler::PushProfileResult(int id, const ProfileData& data)
 	{
 		m_ProfileResults[id].push_back(data);
 		if (m_Instrument && (m_ID == id || m_ID == 0))

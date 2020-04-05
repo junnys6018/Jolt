@@ -5,10 +5,10 @@
 namespace Jolt
 {
 	template <typename Mat>
-	class Model
+	class DrawData
 	{
 	public:
-		Model(Mesh mesh, Mat material)
+		DrawData(Mesh mesh, Mat material)
 			:m_Mesh(mesh), m_Material(material)
 		{
 
