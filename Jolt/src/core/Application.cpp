@@ -22,7 +22,7 @@ namespace Jolt
 	}
 
 	Application::Application(const char* name)
-		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f), m_Ticker(1000.0f)
+		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f), m_Ticker(std::chrono::seconds(1))
 	{
 		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
@@ -66,8 +66,9 @@ namespace Jolt
 			FrameCount++;
 			if (m_Ticker.IsReady()) // Update every second
 			{
-				float duration = m_Ticker.Reset() * 0.001f;
-				m_FPS = (float)FrameCount / duration;
+				Ticker::duration duration = m_Ticker.Duration();
+				m_Ticker.Reset();
+				m_FPS = (float)FrameCount / duration.count() * 1000.0f;
 				FrameCount = 0;
 			}
 

@@ -15,7 +15,7 @@ namespace Jolt
 		void PushProfileResult(int id, const ProfileData& data);
 		std::map<int, std::vector<ProfileData>> GetProfileResults();
 
-		void BeginInstrumentation(int id, long long duration);
+		void BeginInstrumentation(int id, fduration duration);
 
 		inline static CPUProfiler& Get() { return *s_Instance; }
 		inline void Clear() { m_ProfileResults.clear(); }
@@ -26,7 +26,7 @@ namespace Jolt
 		Instrumentor m_Instrumentor;
 		bool m_Instrument;
 		int m_ID;
-		long long m_EndTime;
+		ProfileData::time_point m_EndTime;
 
 		CPUProfiler() = default;
 	};

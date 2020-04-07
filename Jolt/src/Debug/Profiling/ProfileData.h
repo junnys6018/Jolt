@@ -4,8 +4,10 @@ namespace Jolt
 {
 	struct ProfileData
 	{
+		using time_point = std::chrono::time_point<std::chrono::steady_clock>;
+
 		const char* name;
-		long long start, end;
+		time_point start, end;
 	};
 
 }

@@ -21,8 +21,6 @@ namespace Jolt
 				m_Instrumentor.EndSession();
 
 				m_Instrument = false;
-				m_ID = 0;
-				m_EndTime = 0;
 			}
 			else
 			{
@@ -36,13 +34,13 @@ namespace Jolt
 		return m_ProfileResults;
 	}
 
-	void CPUProfiler::BeginInstrumentation(int id, long long duration)
+	void CPUProfiler::BeginInstrumentation(int id, fduration duration)
 	{
 		JOLT_ASSERT(!m_Instrument, "Instrumentation Session Already begun");
 		m_Instrumentor.BeginSession();
 
 		m_Instrument = true;
 		m_ID = id;
-		m_EndTime = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()).time_since_epoch().count() + duration;
+		m_EndTime = std::chrono::steady_clock::now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(duration);
 	}
 }

@@ -15,10 +15,12 @@ namespace Jolt
 	class Timer
 	{
 	public:
+		using time_point = std::chrono::time_point<std::chrono::steady_clock>;
+
 		Timer(int id, const char* name)
 			:m_ID(id), m_Name(name), m_Stopped(false)
 		{
-			m_StartTimePoint = std::chrono::high_resolution_clock::now();
+			m_StartTimePoint = std::chrono::steady_clock::now();
 		}
 
 		~Timer()
@@ -29,20 +31,17 @@ namespace Jolt
 
 		void Stop()
 		{
-			auto end_time_point = std::chrono::high_resolution_clock::now();
-
-			long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimePoint).time_since_epoch().count();
-			long long end = std::chrono::time_point_cast<std::chrono::microseconds>(end_time_point).time_since_epoch().count();
+			time_point end_time_point = std::chrono::steady_clock::now();
 
 			m_Stopped = true;
 
-			CPUProfiler::Get().PushProfileResult(m_ID, { m_Name,start,end });
+			CPUProfiler::Get().PushProfileResult(m_ID, { m_Name,m_StartTimePoint,end_time_point });
 		}
 
 	private:
 		int m_ID;
 		const char* m_Name;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimePoint;
+		time_point m_StartTimePoint;
 		bool m_Stopped;
 	};
 }

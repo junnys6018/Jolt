@@ -1,0 +1,4 @@
+- Scoped variables: snake case
+- Static varaibles s_PascalCase
+- Class members: m_Pascalcase
+- Class methods: Pascal case

@@ -54,7 +54,7 @@ namespace Jolt
 			ImGui::SameLine();
 			
 			ImGui::BeginGroup();
-			static float time = 30.0f;
+			static int time = 5;
 			if (ImGui::BeginChild("LayerInfo", ImVec2(0.0f, -ImGui::GetFrameHeightWithSpacing())))
 			{
 				ImGui::Text(m_Selected->GetName().c_str());
@@ -62,18 +62,18 @@ namespace Jolt
 #ifdef JOLT_PROFILE
 				if (ImGui::Button("Profile Layer"))
 				{
-					LOG_INFO("Profiled {} ms!", time);
-					CPUProfiler::Get().BeginInstrumentation((int)std::hash<void*>{}((void*)m_Selected), (long long)(time * 1000.0f));
+					LOG_INFO("Profiled {} frames!", time);
+					CPUProfiler::Get().BeginInstrumentation((int)std::hash<void*>{}((void*)m_Selected), frames(time));
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("Profile Application"))
 				{
-					LOG_INFO("Profiled {} ms!", time);
-					CPUProfiler::Get().BeginInstrumentation(0, (long long)(time * 1000.0f));
+					LOG_INFO("Profiled {} frames!", time);
+					CPUProfiler::Get().BeginInstrumentation(0, frames(time));
 				}
 				ImGui::SameLine();
 				ImGui::PushItemWidth(80.0f);
-				ImGui::DragFloat("##Time", &time, 5.0f, 30.0f, 1000.0f, "%.0f ms");
+				ImGui::DragInt("##Time", &time, 1.0f, 10, 100, "%d frames");
 				ImGui::PopItemWidth();
 
 				DrawProfileData((int)std::hash<void*>{}((void*)m_Selected));
@@ -131,14 +131,51 @@ namespace Jolt
 	void DebugOverlay::DrawProfileData(int id)
 	{
 		JOLT_PROFILE_FUNCTION();
-		static std::map<int, std::vector<ProfileData>> cached_profile_results = CPUProfiler::Get().GetProfileResults();
-		static Ticker ticker(400.0f); // Update every 400ms
+		struct AmortizedProfileResults
+		{
+			AmortizedProfileResults(const char* name, fduration accumulated_duration)
+				:name(name), accumulated_duration(accumulated_duration), frames(1)
+			{
+
+			}
+			const char* name = nullptr;
+			fduration accumulated_duration = fduration(0.0f);
+			unsigned int frames = 1;
+		};
+		static std::map<int, std::vector<AmortizedProfileResults>> s_AmortizedProfileResultsBackBuf, s_AmortizedProfileResultsFrontBuf;
+
+		static Ticker ticker(frames(60));
 		if (ticker.IsReady())
 		{
 			ticker.Reset();
-			cached_profile_results = CPUProfiler::Get().GetProfileResults();
+			s_AmortizedProfileResultsFrontBuf = std::move(s_AmortizedProfileResultsBackBuf);
+			s_AmortizedProfileResultsBackBuf.clear();
 		}
-		auto& profile_data = cached_profile_results[id];
+
+		const auto profile_results = CPUProfiler::Get().GetProfileResults();
+		for (auto& result : profile_results)
+		{
+			for (auto& data : result.second)
+			{
+				std::vector<AmortizedProfileResults>& profile = s_AmortizedProfileResultsBackBuf[result.first];
+				auto it = std::find_if(profile.begin(), profile.end(), [&](const AmortizedProfileResults & r) -> bool
+				{
+					return std::strcmp(r.name, data.name) == 0;
+				});
+
+				if (it == profile.end())
+				{
+					profile.emplace_back(data.name, data.end - data.start);
+				}
+				else
+				{
+					it->accumulated_duration += data.end - data.start;
+					it->frames++;
+				}
+			}
+		}
+
+		auto& profile_data = s_AmortizedProfileResultsFrontBuf[id];
 		ImGui::Columns(2, "mycol");
 		float width = ImGui::GetWindowContentRegionWidth();
 		ImGui::SetColumnWidth(0, width - 80.0f);
@@ -148,9 +185,9 @@ namespace Jolt
 		ImGui::Separator();
 
 		float total = 0.0f;
-		for (const ProfileData& duration : profile_data)
+		for (const AmortizedProfileResults& duration : profile_data)
 		{
-			float ms_time = (duration.end - duration.start) * 0.001f;
+			float ms_time = duration.accumulated_duration.count() / duration.frames;
 			total += ms_time;
 			ImGui::Text(duration.name);
 			ImGui::NextColumn();

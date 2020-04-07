@@ -5,25 +5,31 @@
 class Ticker
 {
 public:
-	Ticker(float duration) // Duration in milliseconds
-		:m_Duration(duration), m_LastActivationTime(std::chrono::high_resolution_clock::now())
+	using duration = fduration;
+
+	Ticker(duration duration) // Duration in milliseconds
+		:m_Duration(duration), m_LastActivationTime(std::chrono::steady_clock::now())
 	{
 
 	}
 
 	inline bool IsReady()
 	{
-		std::chrono::duration<float, std::milli> elapsed_time = std::chrono::high_resolution_clock::now() - m_LastActivationTime;
-		return elapsed_time.count() > m_Duration;
+		duration elapsed_time = std::chrono::steady_clock::now() - m_LastActivationTime;
+		return elapsed_time > m_Duration;
+	}
+
+	inline duration Duration() // Returns duration since last Reset call
+	{
+		duration elapsed_time = std::chrono::steady_clock::now() - m_LastActivationTime;
+		return elapsed_time;
 	}
 	
-	inline float Reset() // Returns duration since last Reset call
+	inline void Reset()
 	{
-		std::chrono::duration<float, std::milli> elapsed_time = std::chrono::high_resolution_clock::now() - m_LastActivationTime;
-		m_LastActivationTime = std::chrono::high_resolution_clock::now();
-		return elapsed_time.count();
+		m_LastActivationTime = std::chrono::steady_clock::now();
 	}
 private:
-	float m_Duration;
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_LastActivationTime;
+	duration m_Duration;
+	std::chrono::time_point<std::chrono::steady_clock> m_LastActivationTime;
 };
