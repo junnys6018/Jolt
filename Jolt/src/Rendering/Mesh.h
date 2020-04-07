@@ -15,13 +15,13 @@ namespace Jolt
 
 		}
 
-		Mesh(Mesh&& other)
+		Mesh(Mesh&& other) noexcept
 			:VertexBuffer(other.VertexBuffer.release()), IndexBuffer(other.IndexBuffer.release()), VertexArray(other.VertexArray.release())
 		{
 
 		}
 
-		Mesh& operator=(Mesh&& other)
+		Mesh& operator=(Mesh&& other) noexcept
 		{
 			VertexBuffer.reset(other.VertexBuffer.release());
 			IndexBuffer.reset(other.IndexBuffer.release());

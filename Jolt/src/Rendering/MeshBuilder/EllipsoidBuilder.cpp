@@ -4,13 +4,15 @@
 namespace Jolt
 {
 	EllipsoidBuilder::EllipsoidBuilder(float radius, uint32_t verticesPerRev)
+		:m_Width(radius), m_Height(radius), m_Depth(radius), m_VerticesPerRev(verticesPerRev)
 	{
-		SetDimensions(radius, radius, radius, verticesPerRev);
+
 	}
 
 	EllipsoidBuilder::EllipsoidBuilder(float width, float height, float depth, uint32_t verticesPerRev)
+		: m_Width(width), m_Height(height), m_Depth(depth), m_VerticesPerRev(verticesPerRev)
 	{
-		SetDimensions(width, height, depth, verticesPerRev);
+
 	}
 
 	void EllipsoidBuilder::SetDimensions(float width, float height, float depth, uint32_t verticesPerRev)
@@ -36,7 +38,7 @@ namespace Jolt
 		if (m_MeshProps & MeshPropsTextureCoords)
 			floats_per_vertex += 2;
 
-		Vertices.reserve(floats_per_vertex * m_VerticesPerRev * m_VerticesPerRev);
+		Vertices.reserve((size_t)floats_per_vertex * m_VerticesPerRev * m_VerticesPerRev);
 		for (uint32_t i_theta = 0; i_theta < m_VerticesPerRev; i_theta++)
 		{
 			for (uint32_t i_phi = 0; i_phi < m_VerticesPerRev; i_phi++)
@@ -57,7 +59,7 @@ namespace Jolt
 		/* Notes: We wrap the sphere along the x direction, but not y. 
 		 * Therefore x segments require an extra row of triangles   */
 		std::vector<GLuint> Indices;
-		Indices.reserve(6 * m_VerticesPerRev * (m_VerticesPerRev - 1));
+		Indices.reserve((size_t)6 * m_VerticesPerRev * (m_VerticesPerRev - 1));
 		auto Idx = [&](int x, int y) -> unsigned int {return y * m_VerticesPerRev + (x % m_VerticesPerRev); };
 		for (uint32_t y = 0; y < m_VerticesPerRev - 1; y++)
 		{

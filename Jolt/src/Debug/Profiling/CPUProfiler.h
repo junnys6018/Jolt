@@ -24,8 +24,8 @@ namespace Jolt
 		static CPUProfiler* s_Instance;
 
 		Instrumentor m_Instrumentor;
-		bool m_Instrument;
-		int m_ID;
+		bool m_Instrument = false;
+		int m_ID = 0;
 		ProfileData::time_point m_EndTime;
 
 		CPUProfiler() = default;
