@@ -103,6 +103,12 @@ project "Sandbox"
 		"Jolt"
 	}
 
+	-- Windows only -- 
+	postbuildcommands
+	{
+		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%{prj.name}.exe"
+	}
+
 	defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "configurations:Debug"
@@ -133,9 +139,10 @@ project "Util"
 		"%{prj.name}/src/**.cpp",
 	}
 
+	-- Windows only -- 
 	postbuildcommands
 	{
-		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%Jolt.exe"
+		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}Jolt.exe"
 	}
 
 	defines { "_CRT_SECURE_NO_WARNINGS" }

@@ -12,7 +12,7 @@ void Useage(const char* name)
 
 int main(int argc, char** argv)
 {
-	if (argc < 2)
+	if (argc <= 2)
 	{
 		Useage(argv[0]);
 		return 0;
