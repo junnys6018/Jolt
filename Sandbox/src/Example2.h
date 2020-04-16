@@ -49,7 +49,7 @@ public:
 
 		m_Model.SetTransform(model);
 
-		glm::vec3 lightpos = glm::vec3(sinf(glfwGetTime()), 0.0f, cosf(glfwGetTime()));
+		glm::vec3 lightpos = glm::vec3(sinf((float)glfwGetTime()), 0.0f, cosf((float)glfwGetTime()));
 
 		{
 			JOLT_PROFILE_SCOPE("Renderer::Draw");

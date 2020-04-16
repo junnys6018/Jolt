@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <cstring>
 #include "mesh.h"
 
 void Useage(const char* name)

@@ -2,7 +2,7 @@ workspace "Jolt"
 	architecture "x64"
 	configurations {"Debug", "Distribution", "Release"}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.architecture}"
+outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 -- Jolt
 project "Jolt"
@@ -29,7 +29,7 @@ project "Jolt"
 		"Jolt/vendor/GLM",
 		"Jolt/vendor/stb_image/src",
 		"Jolt/vendor/GLFW/include",
-		"Jolt/vendor/imgui",
+		"Jolt/vendor/ImGui",
 		"Jolt/vendor/GLAD/include",
 		"Jolt/vendor/spdlog/include"
 	}
@@ -40,13 +40,16 @@ project "Jolt"
 		"ImGui",
 		"GLFW",
 		"Glad",
-		"opengl32.lib"
 	}
 
 	pchheader "pch.h"
 	pchsource "Jolt/src/pch.cpp"
 
-	defines { "_CRT_SECURE_NO_WARNINGS" }
+	filter "system:windows"
+		defines { "_CRT_SECURE_NO_WARNINGS", "PLATFORM_WINDOWS" }
+
+	filter "system:linux"
+		defines { "PLATFORM_LINUX" }
 
 	filter "configurations:Debug"
 		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
@@ -66,64 +69,16 @@ project "Jolt"
 group "Dependencies"
 
 include "Jolt/vendor/GLFW"
-include "Jolt/vendor/imgui"
+include "Jolt/vendor/ImGui"
 include "Jolt/vendor/stb_image"
 include "Jolt/vendor/GLAD"
 	
-group ""	
-	
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17" 
+group "Examples"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+include "Sandbox"
 
-	files 
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-	}
-	
-	includedirs 
-	{
-		"Jolt/src",
+group ""
 		
-		"Jolt/vendor/GLFW/include",
-		"Jolt/vendor/GLM",
-		"Jolt/vendor/imgui",
-		"Jolt/vendor/GLAD/include",
-		"Jolt/vendor/spdlog/include"
-	}
-
-	links
-	{
-		"Jolt"
-	}
-
-	-- Windows only -- 
-	postbuildcommands
-	{
-		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}%{prj.name}.exe"
-	}
-
-	defines { "_CRT_SECURE_NO_WARNINGS" }
-
-	filter "configurations:Debug"
-		defines { "JOLT_DEBUG", "JOLT_PROFILE" }
-		symbols "On"
-
-	filter "configurations:Distribution"
-		defines { "JOLT_DISTRIBUTION", "JOLT_PROFILE" }
-		optimize "On"
-
-	filter "configurations:Release"
-		defines { "JOLT_RELEASE" }
-		optimize "On"
-
-
 project "Util"
 	location "Util"
 	kind "ConsoleApp"
@@ -139,13 +94,16 @@ project "Util"
 		"%{prj.name}/src/**.cpp",
 	}
 
-	-- Windows only -- 
-	postbuildcommands
-	{
-		"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}Jolt.exe"
-	}
+	filter "system:windows"
+		postbuildcommands
+		{
+			"copy %{wks.location}bin\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.exe %{prj.location}Jolt.exe"
+		}
 
-	defines { "_CRT_SECURE_NO_WARNINGS" }
+		defines { "_CRT_SECURE_NO_WARNINGS" }
+		
+	filter "system:linux"
+		links { "pthread" }
 
 	filter "configurations:Debug"
 		symbols "On"

@@ -45,9 +45,9 @@ namespace Jolt
 			{
 				float theta = (float)M_PI * (float) i_theta / (m_VerticesPerRev - 1);
 				float phi = 2 * (float)M_PI * (float) i_phi / (m_VerticesPerRev - 1);
-				Vertices.push_back(x * std::sinf(theta) * std::cosf(phi));
-				Vertices.push_back(y * std::cosf(theta));
-				Vertices.push_back(z * std::sinf(theta) * std::sinf(phi));
+				Vertices.push_back(x * sinf(theta) * cosf(phi));
+				Vertices.push_back(y * cosf(theta));
+				Vertices.push_back(z * sinf(theta) * sinf(phi));
 				if (m_MeshProps & MeshPropsTextureCoords)
 				{
 					Vertices.push_back(1.0f - (float)i_phi / (float)(m_VerticesPerRev - 1));

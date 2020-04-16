@@ -1,9 +1,12 @@
 .vs
+.vscode
 bin
 bin-int
 *.sln
 *.vcxproj*
-Sandbox/imgui.ini
 Sandbox/results.json
 *.obj
 *.exe
+*Makefile
+*.out
+*imgui.ini

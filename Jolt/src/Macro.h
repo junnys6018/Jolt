@@ -8,7 +8,11 @@
 #define LOG_ERROR(...)         ::Jolt::Log::GetLogger()->error(__VA_ARGS__)
 #define LOG_CRITICAL(...)      ::Jolt::Log::GetLogger()->critical(__VA_ARGS__)
 
+#if defined(_MSC_VER)
 #define JOLT_ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#elif defined(__GNUC__)
+#define JOLT_ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); } }
+#endif
 
 #define JOLT_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 #define BIT(x) 1 << x

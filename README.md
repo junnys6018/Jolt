@@ -1,8 +1,9 @@
 # Jolt
 C++ / OpenGL game engine
 ## Installation
-Premake files are provided to generate project files for any supported toolset.
-Shell scripts are provided for windows and linux installations
+* Clone repo with `git clone --recursive https://github.com/junnys6018/Jolt` 
+* Premake files are provided to generate project files for any supported toolset. 
+* Shell scripts are provided to generate visual studio project files for Windows and makefiles for Linux 
 ### Windows
 1. Install visual studio 2019
 2. Run `scripts/GenerateWindowsProjects.bat` to generate visual studio project files 

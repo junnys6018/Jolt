@@ -34,8 +34,8 @@ namespace Jolt
 			model.m_Material.SetUniforms(*s_ActiveShader);
 			s_ActiveShader->SetMat4("u_Model", model.m_Transform);
 
-			model.m_Mesh.VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, model.m_Mesh.IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+			model.m_Mesh.m_VertexArray->Bind();
+			glDrawElements(GL_TRIANGLES, model.m_Mesh.m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 		}
 
 		static void EndScene()
