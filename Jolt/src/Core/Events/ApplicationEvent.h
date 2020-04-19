@@ -90,4 +90,33 @@ namespace Jolt
 	private:
 		int m_PosX, m_PosY;
 	};
+
+	class FileDropEvent : public Event
+	{
+	public:
+		FileDropEvent(int count, const char** paths)
+			:m_Paths(count)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				m_Paths[i] = std::string(paths[i]);
+			}
+		}
+
+		inline const std::vector<std::string>& GetPaths() { return m_Paths; }
+
+		static EventType GetStaticType() { return EventType::FileDropped; }
+		virtual EventType GetEventType() override { return GetStaticType(); }
+		virtual std::string EventInfo() override
+		{
+			std::stringstream ss;
+			for (const auto& path : m_Paths)
+			{
+				ss << path << "\n";
+			}
+			return ss.str();
+		}
+	private:
+		std::vector<std::string> m_Paths;
+	};
 }

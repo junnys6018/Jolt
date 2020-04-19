@@ -134,6 +134,13 @@ namespace Jolt
 			WindowMovedEvent* event = new WindowMovedEvent(xpos, ypos);
 			callback(event);
 		});
+
+		glfwSetDropCallback(m_window, [](GLFWwindow* window, int count, const char** paths)
+		{
+			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
+			FileDropEvent* event = new FileDropEvent(count, paths);
+			callback(event);
+		});
 	}
 
 	Window::~Window()

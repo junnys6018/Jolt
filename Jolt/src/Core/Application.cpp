@@ -67,7 +67,7 @@ namespace Jolt
 		int FrameCount = 0;
 		while (!m_Window->WindowShouldClose())
 		{
-			JOLT_PROFILE_FUNCTION();
+			JOLT_PROFILE_SCOPE("void Application::Run()");
 
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
@@ -118,6 +118,7 @@ namespace Jolt
 
 	void Application::ProcessEventQueue()
 	{
+		JOLT_PROFILE_FUNCTION();
 		while (Event* e = m_EventQueue.PopEvent())
 		{
 			EventDispatcher dispatch(e);

@@ -7,3 +7,4 @@
 #include "VertexArray.h"
 #include "VertexLayout.h"
 #include "Texture.h"
+#include "CubeMap.h"

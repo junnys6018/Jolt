@@ -15,6 +15,7 @@ namespace Jolt
 		inline glm::mat4 GetViewMatrix() { return m_Camera.m_View; }
 		inline glm::mat4 GetProjMatrix() { return m_Camera.m_Proj; }
 		inline glm::mat4 GetViewProjMatrix() { return m_Camera.m_Proj * m_Camera.m_View; }
+		inline glm::mat4 GetViewProjMatrixNoTranslate() { return m_Camera.m_Proj * glm::mat4(glm::mat3(m_Camera.m_View)); }
 		inline Camera GetCamera() { return m_Camera; }
 
 	private:

@@ -37,7 +37,7 @@ public:
 		m_IndexBuffer = CreateUnique<IndexBuffer>(6, indices);
 		m_IndexBuffer->Bind();
 
-		m_Texture = CreateUnique<Texture>("HelloWorld.png");
+		m_Texture = CreateUnique<Texture>("res/HelloWorld.png");
 		m_Texture->Bind();
 
 		const char* vertexSrc = R"(

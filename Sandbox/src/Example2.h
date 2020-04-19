@@ -10,12 +10,12 @@ public:
 	using FlatColorRenderer = Jolt::Renderer<LightDummy, MatDummy>;
 	ExampleLayer2()
 		:Layer("Example 2"), m_ClearColor(0.0f), 
-		m_Model(CreateFromFile("data"), 
+		m_Model(CreateFromFile("res/data"), 
 		{
 			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
-			0, (CreateFromFile("data").m_IndexBuffer->GetCount() / 6) * 3), 
+			0, (CreateFromFile("res/data").m_IndexBuffer->GetCount() / 6) * 3), 
 			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))), 
-			(CreateFromFile("data").m_IndexBuffer->GetCount() / 6) * 3, CreateFromFile("data").m_IndexBuffer->GetCount())
+			(CreateFromFile("res/data").m_IndexBuffer->GetCount() / 6) * 3, CreateFromFile("res/data").m_IndexBuffer->GetCount())
 		}),
 		m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
 		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
@@ -27,10 +27,21 @@ public:
 	{
 		glEnable(GL_DEPTH_TEST);
 
-		m_GoochShader = std::unique_ptr<Shader>(Shader::CreateFromFile("Gooch.glsl"));
-		m_FlatColorShader = std::unique_ptr<Shader>(Shader::CreateFromFile("FlatColor.glsl"));
+		m_GoochShader = std::unique_ptr<Shader>(Shader::CreateFromFile("res/Gooch.glsl"));
+		m_FlatColorShader = std::unique_ptr<Shader>(Shader::CreateFromFile("res/FlatColor.glsl"));
 		m_FlatColorShader->Bind();
 		m_FlatColorShader->SetVec3("u_Color", 1.0f, 1.0f, 1.0f);
+
+		std::array<std::string, 6> faces = {
+			"res/right.jpg",
+			"res/left.jpg",
+			"res/top.jpg",
+			"res/bottom.jpg",
+			"res/front.jpg",
+			"res/back.jpg"
+		};
+
+		m_SkyBox = CreateUnique<CubeMap>(faces);
 	}
 
 	virtual void OnDetach() override
@@ -70,6 +81,8 @@ public:
 			m_Cube.SetTransform(glm::translate(glm::mat4(1.0f), lightpos));
 			FlatColorRenderer::Submit(m_Cube);
 			FlatColorRenderer::EndScene();
+
+			DrawCubeMap(*m_SkyBox, m_Camera.GetViewProjMatrixNoTranslate());
 		}
 	}
 
@@ -96,6 +109,7 @@ public:
 private:
 	glm::vec3 m_ClearColor;
 	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
+	std::unique_ptr<CubeMap> m_SkyBox;
 	DrawData<MatGooch> m_Model;
 	DrawData<MatDummy> m_Cube;
 	CameraController m_Camera;

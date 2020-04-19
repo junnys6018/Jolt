@@ -70,7 +70,7 @@ namespace Jolt
 		return texture;
 	}
 
-	void Texture::Bind(unsigned int slot)
+	void Texture::Bind(GLuint slot)
 	{
 		glBindTextureUnit(slot, m_ID);
 	}
