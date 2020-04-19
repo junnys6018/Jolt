@@ -3,6 +3,6 @@
 
 namespace Jolt
 {
-	bool Renderer::s_BeginScene = false;
-	Shader* Renderer::s_ActiveShader = nullptr;
+	bool Renderer<LightDummy, MatDummy>::s_BeginScene = false;
+	Shader* Renderer<LightDummy, MatDummy>::s_ActiveShader = nullptr;
 }

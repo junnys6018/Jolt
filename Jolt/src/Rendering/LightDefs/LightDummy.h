@@ -3,12 +3,8 @@
 
 namespace Jolt
 {
-	class LightDummy : public Light	
+	class LightDummy
 	{
-	public:
-		virtual void SetUniforms(Shader& shader, Camera& camera) override
-		{
 
-		}
 	};
 }

@@ -3,12 +3,8 @@
 
 namespace Jolt
 {
-	class MatDummy : public Material
+	class MatDummy
 	{
-	public:
-		virtual void SetUniforms(Shader& shader) override
-		{
 
-		}
 	};
 }

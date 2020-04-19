@@ -6,12 +6,21 @@ using namespace Jolt;
 class ExampleLayer2 : public Layer
 {
 public:
+	using GoochRenderer = Jolt::Renderer<LightPoint, MatGooch>;
+	using FlatColorRenderer = Jolt::Renderer<LightDummy, MatDummy>;
 	ExampleLayer2()
-		:Layer("Example 2"), m_ClearColor(0.0f), m_Model(CreateFromFile("data"), MatGooch(glm::vec3(1.0f))),
-		m_Cube(CuboidBuilder(0.1f).GenerateMesh(), MatDummy()),
+		:Layer("Example 2"), m_ClearColor(0.0f), 
+		m_Model(CreateFromFile("data"), 
+		{
+			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
+			0, (CreateFromFile("data").m_IndexBuffer->GetCount() / 6) * 3), 
+			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))), 
+			(CreateFromFile("data").m_IndexBuffer->GetCount() / 6) * 3, CreateFromFile("data").m_IndexBuffer->GetCount())
+		}),
+		m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
 		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
-
+	
 	}
 
 	virtual void OnAttach() override
@@ -53,14 +62,14 @@ public:
 
 		{
 			JOLT_PROFILE_SCOPE("Renderer::Draw");
-			Renderer::BeginScene(LightPoint(glm::vec3(1.0f), lightpos), m_GoochShader.get(), m_Camera.GetCamera());
-			Renderer::Submit(m_Model);
-			Renderer::EndScene();
+			GoochRenderer::BeginScene(LightPoint(glm::vec3(1.0f), lightpos), m_GoochShader.get(), m_Camera.GetCamera());
+			GoochRenderer::Submit(m_Model);
+			GoochRenderer::EndScene();
 
-			Renderer::BeginScene(LightDummy(), m_FlatColorShader.get(), m_Camera.GetCamera());
+			FlatColorRenderer::BeginScene(m_FlatColorShader.get(), m_Camera.GetCamera());
 			m_Cube.SetTransform(glm::translate(glm::mat4(1.0f), lightpos));
-			Renderer::Submit(m_Cube);
-			Renderer::EndScene();
+			FlatColorRenderer::Submit(m_Cube);
+			FlatColorRenderer::EndScene();
 		}
 	}
 
