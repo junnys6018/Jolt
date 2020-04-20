@@ -1,50 +1,30 @@
 #include <iostream>
-#include <chrono>
 #include <cstring>
-#include "mesh.h"
+#include "Mesh/MeshCommand.h"
 
 void Useage(const char* name)
 {
-	std::cout << "Useage: " << name << " <command> [<args>]\n" << std::endl;
-	std::cout << "Commands:\n";
-	std::cout << "    mesh <filepath> [output name]\n";
+	std::cout << "Useage: " << name << " <command> [--help | <args>]\n" << std::endl;
+	std::cout << "Options:" << std::endl;
+	std::cout << "    --help: Print help for the chosen command" << std::endl;
+	std::cout << "Commands:" << std::endl;;
+	std::cout << "    mesh: Convert a 3D model into Jolt mesh file" << std::endl;
+	std::cout << std::endl;
 }
+
 
 
 int main(int argc, char** argv)
 {
-	if (argc <= 2)
+	const char* prog_name = argv[0];
+	if (argc >= 2)
 	{
-		Useage(argv[0]);
-		return 0;
+		if (strcmp(argv[1], "mesh") == 0)
+		{
+			MeshCommand(argc, argv);
+		}
 	}
 
-	if (strcmp(argv[1], "mesh "))
-	{
-		auto beg = std::chrono::high_resolution_clock::now();
-		std::vector<vec3> vPos;
-		std::vector<vec3> vNorm;
-		std::vector<vec2> vTex;
-		std::vector<Index> iBuf;
-		ModelFlags modelFlags;
-
-		BufferObj(argv[2], vPos, vNorm, vTex, iBuf, modelFlags);
-
-		std::vector<float> vertexBuffer;
-		std::vector<unsigned int> indexBuffer;
-
-		ExpandObj(vPos, vNorm, vTex, iBuf, vertexBuffer, indexBuffer, modelFlags);
-
-		WriteToFile("data", vertexBuffer, indexBuffer, modelFlags);
-		auto end = std::chrono::high_resolution_clock::now();
-
-		auto duration = end - beg;
-		std::cout << "Done! (" << (float)duration.count() / 1000000 << "ms)\n";
-	}
-	else
-	{
-		Useage(argv[0]);
-	}
-
+	Useage(prog_name);
 	return 0;
 }

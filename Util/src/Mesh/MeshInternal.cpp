@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <thread>
 
-#include "mesh.h"
-#include "ProgressBar.h"
+#include "MeshInternal.h"
+#include "../Core/ProgressBar.h"
 
 void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf, ModelFlags& modelFlags)
 {

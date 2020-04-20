@@ -1,5 +1,6 @@
 #pragma once	
 #include <vector>
+#include <string>
 
 #define BIT(x) 1 << x
 
