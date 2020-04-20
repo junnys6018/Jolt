@@ -9,6 +9,7 @@ namespace Jolt
 {
 	CubeMap* CubeMap::Create(std::array<std::string, 6> faces)
 	{
+		LOG_INFO("Loading CubeMap ...");
 		CubeMap* cubeMap = new CubeMap();
 		glGenTextures(1, &cubeMap->m_ID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->m_ID);
@@ -16,6 +17,7 @@ namespace Jolt
 		int width, height, nrChannels;
 		for (int i = 0; i < faces.size(); ++i)
 		{
+			LOG_INFO("\tLoading face: {}", faces[i].c_str());
 			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data)
 			{
@@ -26,7 +28,7 @@ namespace Jolt
 			}
 			else
 			{
-				LOG_ERROR("Cubemap texture failed to load at path: {}", faces[i]);
+				JOLT_ASSERT(false, "Cubemap texture failed to load at path:", faces[i]);
 				stbi_image_free(data);
 				return nullptr;
 			}

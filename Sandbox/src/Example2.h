@@ -9,7 +9,7 @@ public:
 	using GoochRenderer = Jolt::Renderer<LightPoint, MatGooch>;
 	using FlatColorRenderer = Jolt::Renderer<LightDummy, MatDummy>;
 	ExampleLayer2()
-		:Layer("Example 2"), m_ClearColor(0.0f), 
+		:Layer("Example 2"),
 		m_Model(CreateFromFile("res/data"), 
 		{
 			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
@@ -54,7 +54,6 @@ public:
 	{
 		JOLT_PROFILE_FUNCTION();
 
-		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
 		{
 			JOLT_PROFILE_SCOPE("CameraController::OnUpdate");
 			m_Camera.OnUpdate(ts);
@@ -91,7 +90,6 @@ public:
 		JOLT_PROFILE_FUNCTION();
 		ImGui::Begin("test");
 
-		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);
 		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.1f, 5.0f);
 		ImGui::Text("Press 'R' to Rotate");
 
@@ -107,7 +105,6 @@ public:
 	}
 
 private:
-	glm::vec3 m_ClearColor;
 	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
 	std::unique_ptr<CubeMap> m_SkyBox;
 	DrawData<MatGooch> m_Model;

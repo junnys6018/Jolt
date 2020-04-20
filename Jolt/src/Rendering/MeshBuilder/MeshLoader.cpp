@@ -9,7 +9,9 @@ namespace Jolt
 {
 	Mesh CreateFromFile(const std::string& filepath)
 	{
+		LOG_INFO("Loading Mesh: {}", filepath);
 		std::ifstream file(filepath, std::ios::binary);
+		JOLT_ASSERT(file.good(), "Failed to load:", filepath.c_str());
 
 		struct
 		{

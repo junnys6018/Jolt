@@ -7,6 +7,7 @@ namespace Jolt
 {
 	Texture* Texture::Create(const std::string& filepath)
 	{
+		LOG_INFO("Loading Texture: {}", filepath);
 		Texture* texture = new Texture();
 		glGenTextures(1, &texture->m_ID);
 		glBindTexture(GL_TEXTURE_2D, texture->m_ID);
@@ -43,7 +44,7 @@ namespace Jolt
 		else
 		{
 			const char* log = stbi_failure_reason();
-			JOLT_ASSERT(false, "Failed to load ", filepath, log);
+			JOLT_ASSERT(false, "Failed to load:", filepath, log);
 		}
 
 		stbi_image_free(data);
