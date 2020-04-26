@@ -9,15 +9,7 @@ public:
 	using GoochRenderer = Jolt::Renderer<LightPoint, MatGooch>;
 	using FlatColorRenderer = Jolt::Renderer<LightDummy, MatDummy>;
 	ExampleLayer2()
-		:Layer("Example 2"),
-		m_Model(CreateFromFile("res/data"), 
-		{
-			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
-			0, (CreateFromFile("res/data").m_IndexBuffer->GetCount() / 6) * 3), 
-			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))), 
-			(CreateFromFile("res/data").m_IndexBuffer->GetCount() / 6) * 3, CreateFromFile("res/data").m_IndexBuffer->GetCount())
-		}),
-		m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
+		:Layer("Example 2"), m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
 		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
 	{
 	
@@ -27,10 +19,21 @@ public:
 	{
 		glEnable(GL_DEPTH_TEST);
 
-		m_GoochShader = std::unique_ptr<Shader>(Shader::CreateFromFile("res/Gooch.glsl"));
-		m_FlatColorShader = std::unique_ptr<Shader>(Shader::CreateFromFile("res/FlatColor.glsl"));
+		m_GoochShader = CreateUnique<Shader>("res/Gooch.glsl");
+		m_FlatColorShader = CreateUnique<Shader>("res/FlatColor.glsl");
 		m_FlatColorShader->Bind();
 		m_FlatColorShader->SetVec3("u_Color", 1.0f, 1.0f, 1.0f);
+
+		Mesh mesh = CreateFromFile("res/data");
+		auto index_count = mesh.m_IndexBuffer->GetCount();
+		auto material_map = {
+				MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
+				0, (index_count / 6) * 3),
+				MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))),
+				(index_count / 6) * 3, index_count)
+		};
+
+		m_Model = std::make_unique<DrawData<MatGooch>>(std::move(mesh), material_map);
 
 		std::array<std::string, 6> faces = {
 			"res/right.jpg",
@@ -66,14 +69,14 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
 		model = glm::rotate(glm::mat4(1.0f), m_Angle, glm::vec3(1.0f, 1.0, 0.0f));
 
-		m_Model.SetTransform(model);
+		m_Model->SetTransform(model);
 
 		glm::vec3 lightpos = glm::vec3(sinf((float)glfwGetTime()), 0.0f, cosf((float)glfwGetTime()));
 
 		{
 			JOLT_PROFILE_SCOPE("Renderer::Draw");
 			GoochRenderer::BeginScene(LightPoint(glm::vec3(1.0f), lightpos), m_GoochShader.get(), m_Camera.GetCamera());
-			GoochRenderer::Submit(m_Model);
+			GoochRenderer::Submit(*m_Model);
 			GoochRenderer::EndScene();
 
 			FlatColorRenderer::BeginScene(m_FlatColorShader.get(), m_Camera.GetCamera());
@@ -107,7 +110,7 @@ public:
 private:
 	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
 	std::unique_ptr<CubeMap> m_SkyBox;
-	DrawData<MatGooch> m_Model;
+	std::unique_ptr<DrawData<MatGooch>> m_Model;
 	DrawData<MatDummy> m_Cube;
 	CameraController m_Camera;
 

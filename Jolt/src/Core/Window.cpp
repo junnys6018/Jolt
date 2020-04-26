@@ -12,27 +12,33 @@ namespace Jolt
 
 	bool Window::WindowShouldClose()
 	{
-		return glfwWindowShouldClose(m_window);
+		return glfwWindowShouldClose(m_Window);
 	}
 
 	void Window::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_window);
+		glfwSwapBuffers(m_Window);
 	}
 
 	void Window::SetEventCallback(const EventCallbackFn& fn)
 	{
 		static EventCallbackFn local = fn;
-		glfwSetWindowUserPointer(m_window, (void*)&local);
+		glfwSetWindowUserPointer(m_Window, (void*)&local);
 	}
 
 	Window::Window(const char* name)
 	{
-		m_window = glfwCreateWindow(1280, 720, name, NULL, NULL);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
+		m_Window = glfwCreateWindow(1280, 720, name, NULL, NULL);
+
+		glfwMakeContextCurrent(m_Window);
+		glfwSwapInterval(1); // Enable vsync
 
 		/* Event Callback */
-		glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			switch (action)
@@ -58,28 +64,28 @@ namespace Jolt
 			}
 		});
 
-		glfwSetCharCallback(m_window, [](GLFWwindow * window, unsigned int key)
+		glfwSetCharCallback(m_Window, [](GLFWwindow * window, unsigned int key)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			KeyTypedEvent* event = new KeyTypedEvent(key);
 			callback(event);
 		});
 
-		glfwSetCursorPosCallback(m_window, [](GLFWwindow * window, double xPos, double yPos)
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow * window, double xPos, double yPos)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			MouseMovedEvent* event = new MouseMovedEvent((float)xPos, (float)yPos);
 			callback(event);
 		});
 
-		glfwSetScrollCallback(m_window, [](GLFWwindow * window, double xoffset, double yoffset)
+		glfwSetScrollCallback(m_Window, [](GLFWwindow * window, double xoffset, double yoffset)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			MouseScrolledEvent* event = new MouseScrolledEvent((float)xoffset, (float)yoffset);
 			callback(event);
 		});
 
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow * window, int button, int action, int mods)
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow * window, int button, int action, int mods)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			switch (action)
@@ -99,21 +105,21 @@ namespace Jolt
 			}
 		});
 
-		glfwSetWindowCloseCallback(m_window, [](GLFWwindow * window)
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow * window)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			WindowCloseEvent* event = new WindowCloseEvent();
 			callback(event);
 		});
 
-		glfwSetWindowSizeCallback(m_window, [](GLFWwindow * window, int width, int height)
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow * window, int width, int height)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			WindowResizeEvent* event = new WindowResizeEvent(width, height);
 			callback(event);
 		});
 
-		glfwSetWindowFocusCallback(m_window, [](GLFWwindow * window, int focused)
+		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow * window, int focused)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			if (focused)
@@ -128,14 +134,14 @@ namespace Jolt
 			}
 		});
 
-		glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, int xpos, int ypos)
+		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xpos, int ypos)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			WindowMovedEvent* event = new WindowMovedEvent(xpos, ypos);
 			callback(event);
 		});
 
-		glfwSetDropCallback(m_window, [](GLFWwindow* window, int count, const char** paths)
+		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths)
 		{
 			EventCallbackFn& callback = *(EventCallbackFn*)glfwGetWindowUserPointer(window);
 			FileDropEvent* event = new FileDropEvent(count, paths);
@@ -145,7 +151,7 @@ namespace Jolt
 
 	Window::~Window()
 	{
-		glfwDestroyWindow(m_window);
+		glfwDestroyWindow(m_Window);
 		glfwTerminate();
 	}
 }

@@ -10,7 +10,7 @@ namespace Jolt
 		static Texture* Create(const std::string& filepath);
 		static Texture* Create(float r, float g, float b);
 
-		void Bind(unsigned int slot = 0);
+		void Bind(GLuint slot = 0);
 		// void UnBind();
 		inline GLuint GetHandle() { return m_ID; }
 

@@ -42,7 +42,7 @@ namespace Jolt
 		return source;
 	}
 
-	Shader* Shader::CreateFromFile(const std::string& shaderPath)
+	Shader* Shader::Create(const std::string& shaderPath)
 	{
 		Shader* shader = new Shader();
 		ShaderSource source = ReadFileAsString(shaderPath);
@@ -52,7 +52,7 @@ namespace Jolt
 		return shader;
 	}
 
-	Shader* Shader::CreateFromChar(const char* vertexSrc, const char* fragmentSrc)
+	Shader* Shader::Create(const char* vertexSrc, const char* fragmentSrc)
 	{
 		Shader* shader = new Shader();
 		ShaderSource source = { std::string(vertexSrc),std::string(fragmentSrc) };

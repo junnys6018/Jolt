@@ -10,12 +10,6 @@
 
 namespace Jolt
 {
-	// TODO move function to new file
-	void error_callback(int code, const char* description)
-	{
-		LOG_ERROR("GLFW error: {}", description);
-	}
-
 	Application* Application::s_Instance = nullptr;
 
 	static void PrintSystemInfomation()
@@ -38,17 +32,18 @@ namespace Jolt
 		CPUProfiler::Init();
 #endif
 
-		JOLT_ASSERT(glfwInit() == GLFW_TRUE, "GLFW Failed to initialize");
-		glfwSetErrorCallback(error_callback);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwSetErrorCallback([](int code, const char* description)
+		{
+			LOG_ERROR("GLFW error: {}", description);
+		});
+		int success = glfwInit();
+		JOLT_ASSERT(success == GLFW_TRUE, "GLFW Failed to initialize");
 		m_Window = CreateUnique<Window>(name);
 		m_Window->SetEventCallback(JOLT_BIND_EVENT_FN(Application::OnEventCallback));
-		glfwMakeContextCurrent(m_Window->GetNaitiveWindow());
-		glfwSwapInterval(1); // Enable vsync
 
-		// Load all OpenGL functions using the glfw loader function
-		JOLT_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize OpenGL functions")
+		// Load all OpenGL functions using the glfw loader function *** MUST be done after calling glfwInit() ***
+		success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		JOLT_ASSERT(success, "Failed to initialize OpenGL functions");
 
 		Input::Init(m_Window->GetNaitiveWindow());
 

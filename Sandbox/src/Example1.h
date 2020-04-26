@@ -80,7 +80,7 @@ public:
 			}
 		)";
 
-		m_Shader = std::unique_ptr<Shader>(Shader::CreateFromChar(vertexSrc, fragmentSrc));
+		m_Shader = CreateUnique<Shader>(vertexSrc, fragmentSrc);
 		m_Shader->Bind();
 		m_Shader->SetBool("u_UseTexture", m_UseTexture);
 		m_Shader->SetInt("u_Texture", 0);
@@ -93,6 +93,7 @@ public:
 
 	virtual void OnUpdate(float ts) override
 	{
+		JOLT_PROFILE_FUNCTION();
 		glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], 1.0f);
 
 		m_VertexArray->Bind();
@@ -107,6 +108,7 @@ public:
 
 	virtual void OnImGuiRender() override
 	{
+		JOLT_PROFILE_FUNCTION();
 		ImGui::Begin("test");
 
 		ImGui::ColorEdit3("Clear Color", &m_ClearColor[0]);

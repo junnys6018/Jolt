@@ -17,7 +17,7 @@ namespace Jolt
 		int width, height, nrChannels;
 		for (int i = 0; i < faces.size(); ++i)
 		{
-			LOG_INFO("\tLoading face: {}", faces[i].c_str());
+			LOG_INFO("  Loading face: {}", faces[i].c_str());
 			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data)
 			{
@@ -137,7 +137,7 @@ namespace Jolt
 			}
 		)";
 
-		static std::unique_ptr<Shader> shader = std::unique_ptr<Shader>(Shader::CreateFromChar(vertex_source, fragment_source));
+		static std::unique_ptr<Shader> shader = CreateUnique<Shader>(vertex_source, fragment_source);
 
 		static bool first_call = true;
 		if (first_call)
