@@ -1,12 +1,73 @@
 #include <string>
+#include <cstring>
+#include <cassert>
+#include <cstdlib>
 #include <vector>
 #include <fstream>
-#include <sstream>
 #include <unordered_map>
 #include <thread>
 
 #include "MeshInternal.h"
 #include "../Core/ProgressBar.h"
+#include "../Core/StringUtility.h"
+
+static inline bool IsSpace(char c)
+{
+	return c == ' ' || c == '\t';
+}
+
+static inline void GetFloat(float& f, const char** token)
+{
+	char* end;
+	f = std::strtof(*token, &end);
+	*token = end;
+}
+
+static inline void GetFloat3(float& x, float& y, float& z, const char** token)
+{
+	GetFloat(x, token);
+	GetFloat(y, token);
+	GetFloat(z, token);
+}
+
+static inline void GetFloat2(float& x, float& y, const char** token)
+{
+	GetFloat(x, token);
+	GetFloat(y, token);
+}
+
+static void GetIndices(int& v, int& vn, int& vt, const char** token)
+{
+	vn = 1; vt = 1;
+	v = atoi(*token);
+	*token += strcspn(*token, "/ \t\r");
+	if ((*token)[0] != '/')
+		return;
+
+	(*token)++;
+
+	// i//k
+	if ((*token)[0] == '/') 
+	{
+    	(*token)++;
+    	vn = atoi(*token);
+    	*token += strcspn(*token, "/ \t\r");
+		return;
+	}
+
+	// i/j/k or i/j
+	vt = atoi(*token);
+	*token += strcspn(*token, "/ \t\r");
+	if ((*token)[0] != '/')
+		return;
+
+
+	// i/j/k
+  	(*token)++;  // skip '/'
+	vn = atoi(*token);
+
+	*token += strcspn(*token, "/ \t\r");
+}
 
 void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<vec2>& vTex, std::vector<Index>& iBuf, ModelFlags& modelFlags)
 {
@@ -32,29 +93,39 @@ void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>&
 			progress = (double)pos / (int)size;
 		}
 
-		std::stringstream s(line);
-		std::string id;
-		s >> id;
-		if (id == "v")
+		// Skip leading space
+		const char* token = line.c_str();
+		token += std::strspn(token, " \t");
+
+		assert(token);
+    	if (token[0] == '\0') continue;  // empty line
+
+    	if (token[0] == '#') continue;  // comment line
+
+		if (token[0] == 'v' && IsSpace(token[1]))
 		{
+			token += 2;
 			float x, y, z;
-			s >> x; s >> y; s >> z;
+			GetFloat3(x, y, z, &token);
 			vPos.push_back({ x, y, z });
 		}
-		else if (id == "vn")
+		else if (token[0] == 'v' && token[1] == 'n' && IsSpace((token[2])))
 		{
+			token += 3;
 			float x, y, z;
-			s >> x; s >> y; s >> z;
+			GetFloat3(x, y, z, &token);
 			vNorm.push_back({ x, y, z });
 		}
-		else if (id == "vt")
+		else if (token[0] == 'v' && token[1] == 't' && IsSpace((token[2])))
 		{
+			token += 3;
 			float x, y;
-			s >> x; s >> y;
+			GetFloat2(x, y, &token);
 			vTex.push_back({ x, y });
 		}
-		else if (id == "f")
+		else if (token[0] == 'f' && IsSpace(token[1]))
 		{
+			token += 2;
 			if (first_face)
 			{
 				first_face = false;
@@ -64,32 +135,16 @@ void BufferObj(const char* filepath, std::vector<vec3>& vPos, std::vector<vec3>&
 				if (vTex.size() != 0)
 					modelFlags |= ModelFlagsTextureCoordinate;
 			}
-			std::string data;
+
 			int iterations = 0;
-			while (s >> data)
+			TrimWhiteSpace(&token);
+			while (token[0] != '\0' && token[0] != '\n' && token[0] != '\r')
 			{
 				int v, vt, vn;
-				if ((modelFlags & ModelFlagsNormal) && (modelFlags & ModelFlagsTextureCoordinate))
-				{
-					std::sscanf(data.c_str(), "%i/%i/%i", &v, &vt, &vn);
-				}
-				else if (modelFlags & ModelFlagsNormal)
-				{
-					vt = 1;
-					std::sscanf(data.c_str(), "%i//%i", &v, &vn);
-				}
-				else if (modelFlags & ModelFlagsTextureCoordinate)
-				{
-					vn = 1;
-					std::sscanf(data.c_str(), "%i/%i", &v, &vt);
-				}
-				else
-				{
-					vn = 1; vt = 1;
-					std::sscanf(data.c_str(), "%i", &v);
-				}
+				GetIndices(v, vn, vt, &token);
 				iBuf.push_back({ v - 1, vt - 1, vn - 1 });
 				iterations++;
+				TrimWhiteSpace(&token);
 			}
 			if (iterations == 4) // Rectangle was specified, assume points are specifed in ACW winding order
 			{

@@ -48,6 +48,7 @@ std::string FormatToString(FILE_FORMAT format)
 
 void MeshCommand(int argc, char** argv)
 {
+	auto beg = std::chrono::high_resolution_clock::now();
     const char* prog_name = argv[0];
 	if (argc == 2 || argc == 3 && strcmp(argv[2], "--help") == 0)
 	{
@@ -104,7 +105,6 @@ void MeshCommand(int argc, char** argv)
 	{
 	case FILE_FORMAT::OBJ:
 	{
-		auto beg = std::chrono::high_resolution_clock::now();
 		std::vector<vec3> vPos;
 		std::vector<vec3> vNorm;
 		std::vector<vec2> vTex;
@@ -121,8 +121,8 @@ void MeshCommand(int argc, char** argv)
 		WriteToFile(output_name, vertexBuffer, indexBuffer, modelFlags);
 		auto end = std::chrono::high_resolution_clock::now();
 
-		auto duration = end - beg;
-		std::cout << "Done! (" << (float)duration.count() / 1000000 << "ms)\n";
+		std::chrono::duration<float, std::milli> duration = end - beg;
+		std::cout << "Done! (" << duration.count() << "ms)\n";
 		break;
 	}
 			

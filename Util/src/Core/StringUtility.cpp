@@ -4,6 +4,12 @@
 #include <iostream>
 #include <cstring>
 
+void TrimWhiteSpace(const char** string)
+{
+	while(std::isspace(**string))
+		(*string)++;
+}
+
 std::string GetExtension(const char* file, bool& success)
 {
 	const char* last_dot = strrchr(file, '.');
