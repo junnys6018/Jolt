@@ -16,8 +16,8 @@ namespace Jolt
 	class Shader
 	{
 	public:
-		static Shader* Create(const std::string& shaderPath);
-		static Shader* Create(const char* vertexSrc, const char* fragmentSrc);
+		static Shader* Create(const std::string& shaderPath, std::map<std::string, std::string> replacements = std::map<std::string, std::string>());
+		static Shader* Create(const char* vertexSrc, const char* fragmentSrc, std::map<std::string, std::string> replacements = std::map<std::string, std::string>());
 
 		// Functions sets Uniforms in the shader code
 		void SetInt(const std::string& name, const int& value) const;
@@ -38,8 +38,9 @@ namespace Jolt
 	private:
 		Shader() = default;
 
+		static void PreprocessShader(std::string& source, std::map<std::string, std::string> replacements);
 		static GLuint CompileShader(GLenum type, const std::string& source);
-		static GLuint CreateProgram(Shader* shader, const ShaderSource& source);
+		static GLuint CreateProgram(Shader* shader, ShaderSource& source, std::map<std::string, std::string> replacements);
 		GLint GetUniformLocation(const std::string& name) const;
 	private:
 		GLuint m_ID = 0;

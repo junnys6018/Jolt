@@ -6,8 +6,6 @@ using namespace Jolt;
 class ExampleLayer2 : public Layer
 {
 public:
-	using GoochRenderer = Jolt::Renderer<LightPoint, MatGooch>;
-	using FlatColorRenderer = Jolt::Renderer<LightDummy, MatDummy>;
 	ExampleLayer2()
 		:Layer("Example 2"), m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
 		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
@@ -19,21 +17,23 @@ public:
 	{
 		glEnable(GL_DEPTH_TEST);
 
-		m_GoochShader = CreateUnique<Shader>("res/Gooch.glsl");
+		MeshMetaData mesh_meta_data;
+		Mesh mesh = CreateFromFile("res/data", &mesh_meta_data);
+		auto index_count = mesh_meta_data.m_IndexCount;
+		auto material_map = {
+			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
+			0, (index_count / 6) * 3),
+			MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))),
+			(index_count / 6) * 3, index_count)
+		};
+
+		m_Model = std::make_unique<DrawData<MatGooch>>(std::move(mesh), material_map);
+
+		m_GoochShader = CreateUnique<Shader>("res/Gooch.glsl", mesh_meta_data.GetReplacementMap());
 		m_FlatColorShader = CreateUnique<Shader>("res/FlatColor.glsl");
 		m_FlatColorShader->Bind();
 		m_FlatColorShader->SetVec3("u_Color", 1.0f, 1.0f, 1.0f);
 
-		Mesh mesh = CreateFromFile("res/data");
-		auto index_count = mesh.m_IndexBuffer->GetCount();
-		auto material_map = {
-				MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.980f, 0.439f, 0.780f))),
-				0, (index_count / 6) * 3),
-				MaterialMapper<MatGooch>(std::shared_ptr<MatGooch>(new MatGooch(glm::vec3(0.0f, 0.921f, 0.117f))),
-				(index_count / 6) * 3, index_count)
-		};
-
-		m_Model = std::make_unique<DrawData<MatGooch>>(std::move(mesh), material_map);
 
 		std::array<std::string, 6> faces = {
 			"res/right.jpg",
@@ -50,7 +50,6 @@ public:
 	virtual void OnDetach() override
 	{
 		glDisable(GL_DEPTH_TEST);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	virtual void OnUpdate(float ts) override
@@ -108,10 +107,10 @@ public:
 	}
 
 private:
-	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
-	std::unique_ptr<CubeMap> m_SkyBox;
 	std::unique_ptr<DrawData<MatGooch>> m_Model;
 	DrawData<MatDummy> m_Cube;
+	std::unique_ptr<Shader> m_GoochShader, m_FlatColorShader;
+	std::unique_ptr<CubeMap> m_SkyBox;
 	CameraController m_Camera;
 
 	bool m_Rotating;
@@ -123,7 +122,7 @@ private:
 		if (e.GetKeyCode() == JOLT_KEY_R)
 		{
 			m_Rotating = !m_Rotating;
-			return false;
+			return true;
 		}
 		return false;
 	}

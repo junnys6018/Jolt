@@ -2,6 +2,7 @@
 #include "Shader.h"
 
 #include <fstream>
+#include <sstream>
 
 namespace Jolt
 {
@@ -42,28 +43,30 @@ namespace Jolt
 		return source;
 	}
 
-	Shader* Shader::Create(const std::string& shaderPath)
+	Shader* Shader::Create(const std::string& shaderPath, std::map<std::string, std::string> replacements)
 	{
 		Shader* shader = new Shader();
 		ShaderSource source = ReadFileAsString(shaderPath);
 
-		shader->m_ID = CreateProgram(shader, source);
+		shader->m_ID = CreateProgram(shader, source, replacements);
 
 		return shader;
 	}
 
-	Shader* Shader::Create(const char* vertexSrc, const char* fragmentSrc)
+	Shader* Shader::Create(const char* vertexSrc, const char* fragmentSrc, std::map<std::string, std::string> replacements)
 	{
 		Shader* shader = new Shader();
 		ShaderSource source = { std::string(vertexSrc),std::string(fragmentSrc) };
 
-		shader->m_ID = CreateProgram(shader, source);
+		shader->m_ID = CreateProgram(shader, source, replacements);
 
 		return shader;
 	}
 
-	GLuint Shader::CreateProgram(Shader* shader, const ShaderSource& source)
+	GLuint Shader::CreateProgram(Shader* shader, ShaderSource& source, std::map<std::string, std::string> replacements)
 	{
+		PreprocessShader(source.VertexSource, replacements);
+		PreprocessShader(source.FragmentSource, replacements);
 		GLuint program = glCreateProgram();
 
 		GLuint vertexShader = CompileShader(GL_VERTEX_SHADER, source.VertexSource);
@@ -101,24 +104,36 @@ namespace Jolt
 		return program;
 	}
 
-	void Shader::Bind()
+	void Shader::PreprocessShader(std::string& source, std::map<std::string, std::string> replacements)
 	{
-		glUseProgram(m_ID);
-	}
-
-	void Shader::UnBind()
-	{
-		glUseProgram(0);
-	}
-
-	Shader::~Shader()
-	{
-		GLint current_program; glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
-		if (current_program == m_ID)
+		std::string::size_type search_index = 0;
+		size_t dollar_index;
+		while ((dollar_index = source.find_first_of('$', search_index)) != std::string::npos)
 		{
-			glUseProgram(0);
+			if (source[dollar_index + 1] != '{')
+				continue;
+
+			size_t close_brace_index = source.find_first_of('}', dollar_index);
+			JOLT_ASSERT(close_brace_index != std::string::npos, "No closing brace");
+			search_index = close_brace_index + 1;
+			std::string token = source.substr(dollar_index + 2, close_brace_index - dollar_index - 2);
+			size_t equal_sign_index = token.find_first_of('=');
+			bool has_equal_sign = equal_sign_index != std::string::npos;
+
+			std::string key = token.substr(0, equal_sign_index);
+
+			auto it = replacements.find(key);
+			if (it == replacements.end()) // use default replacement if provided
+			{
+				JOLT_ASSERT(has_equal_sign, "Key:", key, "was not provided a replacement and has no default value");
+				std::string val = token.substr(equal_sign_index + 1);
+				source.replace(dollar_index, close_brace_index - dollar_index + 1, val);
+			}
+			else
+			{
+				source.replace(dollar_index, close_brace_index - dollar_index + 1, it->second);
+			}
 		}
-		glDeleteProgram(m_ID);
 	}
 
 	GLuint Shader::CompileShader(GLenum type, const std::string& source)
@@ -149,6 +164,26 @@ namespace Jolt
 		}
 
 		return shader;
+	}
+
+	void Shader::Bind()
+	{
+		glUseProgram(m_ID);
+	}
+
+	void Shader::UnBind()
+	{
+		glUseProgram(0);
+	}
+
+	Shader::~Shader()
+	{
+		GLint current_program; glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
+		if (current_program == m_ID)
+		{
+			glUseProgram(0);
+		}
+		glDeleteProgram(m_ID);
 	}
 
 	// Uniform Setting

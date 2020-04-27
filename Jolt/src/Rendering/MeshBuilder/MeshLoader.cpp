@@ -7,7 +7,7 @@
 
 namespace Jolt
 {
-	Mesh CreateFromFile(const std::string& filepath)
+	Mesh CreateFromFile(const std::string& filepath, MeshMetaData* meta_data)
 	{
 		LOG_INFO("Loading Mesh: {}", filepath);
 		std::ifstream file(filepath, std::ios::binary);
@@ -48,6 +48,14 @@ namespace Jolt
 
 		delete[] vertices;
 		delete[] indices;
+
+		if (meta_data != nullptr)
+		{
+			meta_data->m_VertexBufferSize = header.vertex_buffer_size;
+			meta_data->m_IndexCount = header.index_count;
+			meta_data->m_HasNormals = header.vertex_attribs[NORM] == 'y';
+			meta_data->m_HasTexCoords = header.vertex_attribs[TEX] == 'y';
+		}
 
 		return Mesh(VBuf, IBuf, VAO);
 	}
