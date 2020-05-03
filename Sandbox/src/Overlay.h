@@ -1,7 +1,8 @@
 #pragma once
 #include "Jolt.h"
-#include "Example1.h"
-#include "Example2.h"
+#include "Example1/Example1.h"
+#include "Example2/Example2.h"
+#include "Example3/Example3.h"
 
 using namespace Jolt;
 
@@ -35,9 +36,17 @@ public:
 				Application::Get().PushLayer(m_CurrentLayer);
 				m_State = State::Example2;
 			}
+
+			if (ImGui::Button("Example 3"))
+			{
+				m_CurrentLayer = new ExampleLayer3();
+				Application::Get().PushLayer(m_CurrentLayer);
+				m_State = State::Example3;
+			}
 			break;
 		case State::Example1:
 		case State::Example2:
+		case State::Example3:
 			if (ImGui::Button("<-"))
 			{
 				Application::Get().PopLayer(m_CurrentLayer);
@@ -54,7 +63,8 @@ private:
 	{
 		None,
 		Example1,
-		Example2
+		Example2,
+		Example3,
 	} m_State;
 
 	Layer* m_CurrentLayer;

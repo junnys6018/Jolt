@@ -27,6 +27,8 @@ namespace Jolt
 			m_VertexBuffer.reset(other.m_VertexBuffer.release());
 			m_IndexBuffer.reset(other.m_IndexBuffer.release());
 			m_VertexArray.reset(other.m_VertexArray.release());
+
+			return *this;
 		}
 		// TODO: Mesh should own Vertex Buffers, Index Buffers ... and not pointers to them
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;

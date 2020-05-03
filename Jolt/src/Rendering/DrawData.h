@@ -15,8 +15,8 @@ namespace Jolt
 	class DrawData
 	{
 	public:
-		DrawData(Mesh mesh, Mat material)
-			:m_Mesh(std::move(mesh)), m_Materials(1, MaterialMapper<Mat>(new Mat(material), 0, m_Mesh.m_IndexBuffer->GetCount()))
+		DrawData(Mesh mesh, std::shared_ptr<Mat> material)
+			:m_Mesh(std::move(mesh)), m_Materials(1, MaterialMapper<Mat>(material, 0, m_Mesh.m_IndexBuffer->GetCount()))
 		{
 
 		}

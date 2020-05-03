@@ -5,12 +5,12 @@ namespace Jolt
 {
 	IndexBuffer* IndexBuffer::Create(GLsizei count, const GLuint* data)
 	{
-		IndexBuffer* indexBuffer = new IndexBuffer(count);
-		glGenBuffers(1, &indexBuffer->m_ID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->m_ID);
+		IndexBuffer* index_buffer = new IndexBuffer(count);
+		glGenBuffers(1, &index_buffer->m_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer->m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW);
 
-		return indexBuffer;
+		return index_buffer;
 	}
 
 	void IndexBuffer::Bind()

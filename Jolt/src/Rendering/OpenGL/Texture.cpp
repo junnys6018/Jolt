@@ -5,10 +5,10 @@
 
 namespace Jolt
 {
-	Texture* Texture::Create(const std::string& filepath)
+	Texture2D* Texture2D::Create(const std::string& filepath)
 	{
 		LOG_INFO("Loading Texture: {}", filepath);
-		Texture* texture = new Texture();
+		Texture2D* texture = new Texture2D();
 		glGenTextures(1, &texture->m_ID);
 		glBindTexture(GL_TEXTURE_2D, texture->m_ID);
 
@@ -51,9 +51,9 @@ namespace Jolt
 		return texture;
 	}
 
-	Texture* Texture::Create(float r, float g, float b)
+	Texture2D* Texture2D::Create(float r, float g, float b)
 	{
-		Texture* texture = new Texture();
+		Texture2D* texture = new Texture2D();
 		glGenTextures(1, &texture->m_ID);
 		glBindTexture(GL_TEXTURE_2D, texture->m_ID);
 
@@ -71,12 +71,12 @@ namespace Jolt
 		return texture;
 	}
 
-	void Texture::Bind(GLuint slot)
+	void Texture2D::Bind(GLuint slot)
 	{
 		glBindTextureUnit(slot, m_ID);
 	}
 
-	Texture::~Texture()
+	Texture2D::~Texture2D()
 	{
 		glDeleteTextures(1, &m_ID);
 	}

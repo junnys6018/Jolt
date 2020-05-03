@@ -31,7 +31,7 @@ namespace Jolt
 			float x = m_Width / 2.0f;
 			float y = m_Height / 2.0f;
 			float z = m_Depth / 2.0f;
-			float Vertices[] = {
+			float vertices[] = {
 				-x, -y, -z,
 				-x, -y,  z,
 				-x,  y,  z,
@@ -42,7 +42,7 @@ namespace Jolt
 				 x,  y, -z,
 			};
 
-			static unsigned int Indices[] = {
+			static unsigned int indices[] = {
 				// -x face
 				0, 1, 2,
 				0, 2, 3,
@@ -66,11 +66,11 @@ namespace Jolt
 			auto VAO = VertexArray::Create();
 			VAO->Bind();
 
-			auto VBuf = VertexBuffer::Create(sizeof(Vertices), Vertices);
+			auto VBuf = VertexBuffer::Create(sizeof(vertices), vertices);
 			VBuf->Bind();
 			VAO->SetVertexLayout({ 3 });
 
-			auto IBuf = IndexBuffer::Create(sizeof(Indices) / sizeof(unsigned int), Indices);
+			auto IBuf = IndexBuffer::Create(sizeof(indices) / sizeof(unsigned int), indices);
 			IBuf->Bind();
 			
 			return Mesh(VBuf, IBuf, VAO);
