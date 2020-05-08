@@ -8,7 +8,7 @@
 namespace Jolt
 {
 	DebugOverlay::DebugOverlay()
-		:Layer("DebugOverlay"), m_Open(true), m_Selected(nullptr)
+		:Layer("DebugOverlay"), m_Open(true), m_Selected(nullptr), m_ApplicationPtr(nullptr)
 	{
 
 	}
@@ -16,6 +16,7 @@ namespace Jolt
 	void DebugOverlay::OnAttach()
 	{
 		m_Selected = Application::Get().m_LayerStack.m_Layers[0];
+		m_ApplicationPtr = &Application::Get();
 	}
 
 	void DebugOverlay::OnImGuiRender()
@@ -54,7 +55,7 @@ namespace Jolt
 			ImGui::SameLine();
 			
 			ImGui::BeginGroup();
-			static int time = 5;
+			static int nframes = 5;
 			if (ImGui::BeginChild("LayerInfo", ImVec2(0.0f, -ImGui::GetFrameHeightWithSpacing())))
 			{
 				ImGui::Text(m_Selected->GetName().c_str());
@@ -62,21 +63,19 @@ namespace Jolt
 #ifdef JOLT_PROFILE
 				if (ImGui::Button("Profile Layer"))
 				{
-					LOG_INFO("Profiled {} frames!", time);
-					CPUProfiler::Get().BeginInstrumentation((int)std::hash<void*>{}((void*)m_Selected), frames(time));
+					CPUProfiler::Get().BeginInstrumentation(HashPtr(m_Selected), frames(nframes));
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Profile Application"))
+				if (ImGui::Button("Profile App"))
 				{
-					LOG_INFO("Profiled {} frames!", time);
-					CPUProfiler::Get().BeginInstrumentation(0, frames(time));
+					CPUProfiler::Get().BeginInstrumentation(0, frames(nframes));
 				}
 				ImGui::SameLine();
 				ImGui::PushItemWidth(80.0f);
-				ImGui::DragInt("##Time", &time, 1.0f, 10, 100, "%d frames");
+				ImGui::DragInt("##Time", &nframes, 1.0f, 10, 100, "%d frames");
 				ImGui::PopItemWidth();
 
-				DrawProfileData((int)std::hash<void*>{}((void*)m_Selected));
+				DrawProfileData(HashPtr(m_Selected));
 #endif
 			}
 			ImGui::EndChild();
@@ -88,12 +87,6 @@ namespace Jolt
 			ImGui::End();
 			if (show_demo_menu)
 				ImGui::ShowDemoWindow(&show_demo_menu);
-		}
-		else
-		{
-#ifdef JOLT_PROFILE
-			CPUProfiler::Get().Clear();
-#endif
 		}
 	}
 
@@ -152,7 +145,7 @@ namespace Jolt
 			s_AmortizedProfileResultsBackBuf.clear();
 		}
 
-		const auto profile_results = CPUProfiler::Get().GetProfileResults();
+		const auto& profile_results = CPUProfiler::Get().GetProfileResults();
 		for (auto& result : profile_results)
 		{
 			for (auto& data : result.second)
@@ -195,10 +188,23 @@ namespace Jolt
 			ImGui::NextColumn();
 		}
 		ImGui::Separator();
-		ImGui::Text("Total time");
+		ImGui::Text("Total (layer) time");
 		ImGui::NextColumn();
 		ImGui::Text("%.3f", total);
 		ImGui::NextColumn();
+		auto it = s_AmortizedProfileResultsFrontBuf.find(HashPtr(m_ApplicationPtr));
+		if (it != s_AmortizedProfileResultsFrontBuf.end())
+		{
+			ImGui::Separator();
+			ImGui::TextColored(ImVec4(0.105f, 0.545f, 0.972f, 1.0f), "Total (application) time");
+			ImGui::NextColumn();
+			auto v_it = std::find_if(it->second.begin(), it->second.end(), [](const AmortizedProfileResults & p) -> bool {
+				return strcmp(p.name, "void Application::Run()") == 0;
+			});
+			float time = v_it->accumulated_duration.count() / v_it->frames;
+			ImGui::TextColored(ImVec4(0.105f, 0.545f, 0.972f, 1.0f), "%.3f", time);
+			ImGui::NextColumn();
+		}
 		ImGui::Columns(1);
 		ImGui::Separator();
 

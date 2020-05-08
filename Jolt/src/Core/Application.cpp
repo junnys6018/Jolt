@@ -6,6 +6,7 @@
 #include "Rendering/OpenGL/OpenGLDebug.h"
 #include "Input.h"
 #include "Debug/Profiling/Timer.h"
+#include "Core/Ticker.h"
 
 
 namespace Jolt
@@ -22,7 +23,7 @@ namespace Jolt
 	}
 
 	Application::Application(const char* name)
-		:m_ImGuiOverlay(), m_DebugOverlay(), m_LastFrameTime(0.0f), m_FPS(60.0f), m_Ticker(std::chrono::seconds(1))
+		:m_ImGuiOverlay(), m_DebugOverlay(), m_FPS(60.0f)
 	{
 		JOLT_ASSERT(!s_Instance, "Application Instance already instantiated!");
 		s_Instance = this;
@@ -59,35 +60,41 @@ namespace Jolt
 
 	void Application::Run()
 	{
+		Ticker ticker(std::chrono::seconds(1));
 		int FrameCount = 0;
+		auto last_frame_time = std::chrono::steady_clock::now();
 		while (!m_Window->WindowShouldClose())
 		{
-			JOLT_PROFILE_SCOPE("void Application::Run()");
-
-			float time = (float)glfwGetTime();
-			float timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+#ifdef JOLT_PROFILE
+			Timer timer(HashPtr(this), "void Application::Run()");
+#endif
+			auto current_time = std::chrono::steady_clock::now();
+			fduration timestep = current_time - last_frame_time;
+			last_frame_time = current_time;
 
 			FrameCount++;
-			if (m_Ticker.IsReady()) // Update every second
+			if (ticker.IsReady()) // Update every second
 			{
-				Ticker::duration duration = m_Ticker.Duration();
-				m_Ticker.Reset();
+				Ticker::duration duration = ticker.Duration();
+				ticker.Reset();
 				m_FPS = (float)FrameCount / duration.count() * 1000.0f;
 				FrameCount = 0;
 			}
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate(timestep);
+				layer->OnUpdate(timestep.count());
 
 			m_ImGuiOverlay.Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 			m_ImGuiOverlay.End();
 
-			m_Window->OnUpdate();
 			ProcessEventQueue();
+#ifdef JOLT_PROFILE
+			timer.Stop(); // We do not measure m_Window->OnUpdate() as it pauses execution due to v-sync 
+#endif
+			m_Window->OnUpdate();
 		}
 	}
 

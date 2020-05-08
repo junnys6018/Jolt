@@ -25,7 +25,7 @@ namespace Jolt
 	void Instrumentor::WriteProfile(const ProfileData& result)
 	{
 		if (m_ProfileCount++ > 0)
-			m_OutputStream << ",";
+			m_OutputStream << ",\n\t\t";
 
 		std::string name = result.name;
 		std::replace(name.begin(), name.end(), '"', '\'');
@@ -45,13 +45,13 @@ namespace Jolt
 
 	void Instrumentor::WriteHeader()
 	{
-		m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
+		m_OutputStream << "{\n\t\"otherData\": {},\n\t\"traceEvents\":[\n\t\t";
 		m_OutputStream.flush();
 	}
 
 	void Instrumentor::WriteFooter()
 	{
-		m_OutputStream << "]}";
+		m_OutputStream << "\n\t]\n}";
 		m_OutputStream.flush();
 	}
 }

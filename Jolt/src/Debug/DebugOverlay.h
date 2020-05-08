@@ -23,5 +23,6 @@ namespace Jolt
 	private:
 		bool m_Open;
 		Layer* m_Selected;
+		void* m_ApplicationPtr;
 	};
 }

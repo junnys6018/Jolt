@@ -14,7 +14,7 @@ namespace Jolt
 {
 	CameraController::CameraController(glm::vec3 pos, glm::vec3 look)
 		:m_Camera(), m_Position(pos), m_Direction(look), m_Right(glm::normalize(glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)))),
-		m_Forward(glm::vec3(m_Right.z, 0.0f, -m_Right.x)), m_FOV(60.0f), m_Aspect(0.0f), m_Speed(2.0f), m_Sensitivity(0.1f), m_LastX(0.0f),
+		m_Forward(glm::vec3(m_Right.z, 0.0f, -m_Right.x)), m_FOV(60.0f), m_Aspect(0.0f), m_Speed(0.002f), m_Sensitivity(0.1f), m_LastX(0.0f),
 		m_LastY(0.0f), m_Yaw(glm::degrees(glm::atan(m_Direction.z / m_Direction.x))), m_Pitch(glm::degrees(glm::asin(m_Direction.y))),
 		m_FirstMouse(true)
 	{

@@ -18,6 +18,10 @@ namespace Jolt
 		inline glm::mat4 GetViewProjMatrixNoTranslate() { return m_Camera.m_Proj * glm::mat4(glm::mat3(m_Camera.m_View)); }
 		inline Camera GetCamera() { return m_Camera; }
 
+		inline void SetFOV(float fov) { m_FOV = fov; }
+		inline void SetSpeed(float speed) { m_Speed = speed; }
+		inline void SetSensitivity(float sensitivity) { m_Sensitivity = sensitivity; }
+
 	private:
 		void UpdateViewMatrix();
 		void UpdateProjMatrix();

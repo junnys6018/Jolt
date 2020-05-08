@@ -13,7 +13,7 @@ namespace Jolt
 		static void Init();
 
 		void PushProfileResult(int id, const ProfileData& data);
-		std::map<int, std::vector<ProfileData>> GetProfileResults();
+		const std::map<int, std::vector<ProfileData>>& GetProfileResults();
 
 		void BeginInstrumentation(int id, fduration duration);
 

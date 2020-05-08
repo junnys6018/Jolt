@@ -9,7 +9,7 @@ namespace Jolt
 	public:
 		using duration = fduration;
 
-		Ticker(duration duration) // Duration in milliseconds
+		Ticker(duration duration)
 			:m_Duration(duration), m_LastActivationTime(std::chrono::steady_clock::now())
 		{
 

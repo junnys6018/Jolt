@@ -1,9 +1,9 @@
 #pragma once
-#include <pch.h>
+#include "pch.h"
 #include "CPUProfiler.h"
 
 #ifdef JOLT_PROFILE
-#define JOLT_PROFILE_SCOPE(name) Timer timer##__LINE__((int)std::hash<void*>{}((void*)this), name)
+#define JOLT_PROFILE_SCOPE(name) Timer timer##__LINE__(HashPtr(this), name)
 #define JOLT_PROFILE_FUNCTION() JOLT_PROFILE_SCOPE(__FUNCTION__)
 #else
 #define JOLT_PROFILE_SCOPE(name)

@@ -3,7 +3,6 @@
 #include "Core/LayerStack.h"
 #include "Core/ImGui/ImGuiOverlay.h"
 #include "Core/Events/__Events__.h"
-#include "Core/Ticker.h"
 
 #include "Debug/DebugOverlay.h"
 #include "Debug/Profiling/CPUProfiler.h"
@@ -43,8 +42,7 @@ namespace Jolt
 		ImGuiOverlay m_ImGuiOverlay;
 		DebugOverlay m_DebugOverlay;
 
-		float m_LastFrameTime, m_FPS;
-		Ticker m_Ticker;
+		float m_FPS;
 
 		static Application* s_Instance;
 

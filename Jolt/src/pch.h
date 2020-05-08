@@ -23,3 +23,8 @@ using fduration = std::chrono::duration<float, std::milli>;
 
 #include "Core/Log.h"
 #include "Macro.h"
+
+inline int HashPtr(void* ptr)
+{
+	return (int)std::hash<void*>{}(ptr);
+}

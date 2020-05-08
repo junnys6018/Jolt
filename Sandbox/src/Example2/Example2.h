@@ -8,7 +8,7 @@ class ExampleLayer2 : public Layer
 public:
 	ExampleLayer2()
 		:Layer("Example 2"), m_Cube(CuboidBuilder(0.1f).GenerateMesh()),
-		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(1.0f)
+		m_Camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f)), m_Rotating(false), m_Angle(0.0f), m_RotateSpeed(0.001f)
 	{
 	
 	}
@@ -92,7 +92,7 @@ public:
 		JOLT_PROFILE_FUNCTION();
 		ImGui::Begin("test");
 
-		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.1f, 5.0f);
+		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.001f, 0.02f);
 		ImGui::Text("Press 'R' to Rotate");
 
 		ImGui::End();

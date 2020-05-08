@@ -19,7 +19,7 @@ namespace Jolt
 			if (data.end > m_EndTime)
 			{
 				m_Instrumentor.EndSession();
-
+				LOG_INFO("Profile complete!");
 				m_Instrument = false;
 			}
 			else
@@ -29,18 +29,20 @@ namespace Jolt
 		}
 	}
 
-	std::map<int, std::vector<ProfileData>> CPUProfiler::GetProfileResults()
+	const std::map<int, std::vector<ProfileData>>& CPUProfiler::GetProfileResults()
 	{
 		return m_ProfileResults;
 	}
 
 	void CPUProfiler::BeginInstrumentation(int id, fduration duration)
 	{
-		JOLT_ASSERT(!m_Instrument, "Instrumentation Session Already begun");
-		m_Instrumentor.BeginSession();
+		if (!m_Instrument)
+		{
+			m_Instrumentor.BeginSession();
 
-		m_Instrument = true;
-		m_ID = id;
-		m_EndTime = std::chrono::steady_clock::now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(duration);
+			m_Instrument = true;
+			m_ID = id;
+			m_EndTime = std::chrono::steady_clock::now() + std::chrono::duration_cast<std::chrono::steady_clock::duration>(duration);
+		}
 	}
 }
