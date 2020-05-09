@@ -178,6 +178,10 @@ namespace Jolt
 
 	Shader::~Shader()
 	{
+		/**
+		 * If the shader program is currently bound to the OpenGL context it will be flagged for deletion and not
+		 * actually deleted, hence we must explicitly unbind the shader.
+		 */
 		GLint current_program; glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
 		if (current_program == m_ID)
 		{

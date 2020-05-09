@@ -15,14 +15,15 @@ namespace Jolt
 	class DrawData
 	{
 	public:
-		DrawData(Mesh mesh, std::shared_ptr<Mat> material)
-			:m_Mesh(std::move(mesh)), m_Materials(1, MaterialMapper<Mat>(material, 0, m_Mesh.m_IndexBuffer->GetCount()))
+		DrawData() = default;
+		DrawData(Mesh* mesh, std::shared_ptr<Mat> material)
+			:m_Mesh(std::move(*mesh)), m_Materials(1, MaterialMapper<Mat>(material, 0, m_Mesh.m_IndexBuffer.GetCount()))
 		{
 
 		}
 
-		DrawData(Mesh mesh, const std::vector<MaterialMapper<Mat>>& materials)
-			:m_Mesh(std::move(mesh)), m_Materials(materials)
+		DrawData(Mesh* mesh, const std::vector<MaterialMapper<Mat>>& materials)
+			:m_Mesh(std::move(*mesh)), m_Materials(materials)
 		{
 
 		}
@@ -45,8 +46,9 @@ namespace Jolt
 	template<> class DrawData<MatDummy>
 	{
 	public:
-		DrawData(Mesh mesh)
-			:m_Mesh(std::move(mesh))
+		DrawData() = default;
+		DrawData(Mesh* mesh)
+			:m_Mesh(std::move(*mesh))
 		{
 
 		}

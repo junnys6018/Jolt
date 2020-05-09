@@ -16,11 +16,11 @@ namespace Jolt
 		m_Y1 = y1;
 	}
 
-	Mesh RectangleBuilder::GenerateMesh()
+	Mesh* RectangleBuilder::GenerateMesh()
 	{
 		if (m_MeshProps & MeshPropsNormals || m_MeshProps & MeshPropsTangents)
 		{
-			LOG_ERROR("Cannot generate normals or tangens in a rectangle");
+			LOG_ERROR("Cannot generate normals or tangents in a rectangle");
 		}
 
 		static unsigned int indices[] = {
@@ -37,17 +37,17 @@ namespace Jolt
 				m_X0, m_Y1
 			};
 
-			auto VAO = VertexArray::Create();
+			auto VAO = CreateUnique<VertexArray>();
 			VAO->Bind();
 
-			auto VBuf = VertexBuffer::Create(sizeof(vertex_buffer), vertex_buffer);
+			auto VBuf = CreateUnique<VertexBuffer>(sizeof(vertex_buffer), vertex_buffer);
 			VBuf->Bind();
 			VAO->SetVertexLayout({ 2 });
 
-			auto IBuf = IndexBuffer::Create(sizeof(indices) / sizeof(unsigned int), indices);
+			auto IBuf = CreateUnique<IndexBuffer>(sizeof(indices) / sizeof(unsigned int), indices);
 			IBuf->Bind();
 
-			return Mesh(VBuf, IBuf, VAO);
+			return new Mesh(VBuf.get(), IBuf.get(), VAO.get());
 		}
 
 		if (m_MeshProps & MeshPropsTextureCoords)
@@ -59,17 +59,17 @@ namespace Jolt
 				m_X0, m_Y1,    0.0f, 1.0f
 			};
 
-			auto VAO = VertexArray::Create();
+			auto VAO = CreateUnique<VertexArray>();
 			VAO->Bind();
 
-			auto VBuf = VertexBuffer::Create(sizeof(vertex_buffer), vertex_buffer);
+			auto VBuf = CreateUnique<VertexBuffer>(sizeof(vertex_buffer), vertex_buffer);
 			VBuf->Bind();
 			VAO->SetVertexLayout({ 2,2 });
 
-			auto IBuf = IndexBuffer::Create(sizeof(indices) / sizeof(unsigned int), indices);
+			auto IBuf = CreateUnique<IndexBuffer>(sizeof(indices) / sizeof(unsigned int), indices);
 			IBuf->Bind();
 
-			return Mesh(VBuf, IBuf, VAO);
+			return new Mesh(VBuf.get(), IBuf.get(), VAO.get());
 		}
 
 

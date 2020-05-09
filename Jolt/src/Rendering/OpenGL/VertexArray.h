@@ -18,7 +18,14 @@ namespace Jolt
 
 		void SetVertexLayout(const VertexLayout& layout);
 	private:
-		VertexArray() = default;
+		VertexArray()
+			:m_ID(0) {}
+		VertexArray(VertexArray&& other) noexcept;
+		VertexArray& operator=(VertexArray&& other) noexcept;
+		void Free();
+		
 		GLuint m_ID;
+
+		friend class Mesh; // For move semantics
 	};
 }

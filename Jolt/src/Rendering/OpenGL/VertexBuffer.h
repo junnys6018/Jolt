@@ -15,7 +15,14 @@ namespace Jolt
 
 		~VertexBuffer();
 	private:
-		VertexBuffer() = default;
+		VertexBuffer()
+			:m_ID(0) { }
+		VertexBuffer(VertexBuffer&& other) noexcept;
+		VertexBuffer& operator=(VertexBuffer&& other) noexcept;
+		void Free();
+
 		GLuint m_ID;
+
+		friend class Mesh; // For move semantics
 	};
 }

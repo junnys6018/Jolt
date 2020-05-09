@@ -58,7 +58,7 @@ namespace Jolt
 			static int nframes = 5;
 			if (ImGui::BeginChild("LayerInfo", ImVec2(0.0f, -ImGui::GetFrameHeightWithSpacing())))
 			{
-				ImGui::Text(m_Selected->GetName().c_str());
+				ImGui::Text("%s", m_Selected->GetName().c_str());
 				ImGui::Separator();
 #ifdef JOLT_PROFILE
 				if (ImGui::Button("Profile Layer"))
@@ -182,7 +182,7 @@ namespace Jolt
 		{
 			float ms_time = duration.accumulated_duration.count() / duration.frames;
 			total += ms_time;
-			ImGui::Text(duration.name);
+			ImGui::Text("%s", duration.name);
 			ImGui::NextColumn();
 			ImGui::Text("%.3f", ms_time);
 			ImGui::NextColumn();

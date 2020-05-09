@@ -30,7 +30,7 @@ namespace Jolt
 
 		static void Submit(DrawData<Mat>& model)
 		{
-			model.m_Mesh.m_VertexArray->Bind();
+			model.m_Mesh.m_VertexArray.Bind();
 			s_ActiveShader->Bind();
 			s_ActiveShader->SetMat4("u_Model", model.m_Transform);
 
@@ -82,8 +82,8 @@ namespace Jolt
 
 			s_ActiveShader->SetMat4("u_Model", model.m_Transform);
 
-			model.m_Mesh.m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, model.m_Mesh.m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+			model.m_Mesh.m_VertexArray.Bind();
+			glDrawElements(GL_TRIANGLES, model.m_Mesh.m_IndexBuffer.GetCount(), GL_UNSIGNED_INT, 0);
 		}
 
 		static void EndScene()

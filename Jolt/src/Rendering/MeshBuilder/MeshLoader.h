@@ -4,5 +4,5 @@
 
 namespace Jolt
 {
-	Mesh CreateFromFile(const std::string& filepath, MeshMetaData* meta_data = nullptr);
+	Mesh* CreateFromFile(const std::string& filepath, MeshMetaData* meta_data = nullptr);
 }

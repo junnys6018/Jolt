@@ -7,7 +7,7 @@
 
 namespace Jolt
 {
-	Mesh CreateFromFile(const std::string& filepath, MeshMetaData* meta_data)
+	Mesh* CreateFromFile(const std::string& filepath, MeshMetaData* meta_data)
 	{
 		LOG_INFO("Loading Mesh: {}", filepath);
 		std::ifstream file(filepath, std::ios::binary);
@@ -29,10 +29,10 @@ namespace Jolt
 
 		file.close();
 
-		auto VAO = VertexArray::Create();
+		auto VAO = CreateUnique<VertexArray>();
 		VAO->Bind();
 
-		auto VBuf = VertexBuffer::Create(header.vertex_buffer_size * sizeof(float), vertices);
+		auto VBuf = CreateUnique<VertexBuffer>(header.vertex_buffer_size * sizeof(float), vertices);
 		VBuf->Bind();
 
 		VertexLayout layout = { 3 };
@@ -43,7 +43,7 @@ namespace Jolt
 
 		VAO->SetVertexLayout(layout);
 
-		auto IBuf = IndexBuffer::Create((GLsizei)header.index_count, indices);
+		auto IBuf = CreateUnique<IndexBuffer>((GLsizei)header.index_count, indices);
 		IBuf->Bind();
 
 		delete[] vertices;
@@ -57,6 +57,6 @@ namespace Jolt
 			meta_data->m_HasTexCoords = header.vertex_attribs[TEX] == 'y';
 		}
 
-		return Mesh(VBuf, IBuf, VAO);
+		return new Mesh(VBuf.get(), IBuf.get(), VAO.get());
 	}
 }

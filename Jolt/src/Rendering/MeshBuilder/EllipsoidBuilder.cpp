@@ -23,7 +23,7 @@ namespace Jolt
 		m_VerticesPerRev = verticesPerRev;
 	}
 
-	Mesh EllipsoidBuilder::GenerateMesh()
+	Mesh* EllipsoidBuilder::GenerateMesh()
 	{
 		const float x = m_Width / 2.0f;
 		const float y = m_Height / 2.0f;
@@ -75,17 +75,17 @@ namespace Jolt
 			}
 		}
 
-		auto VAO = VertexArray::Create();
+		auto VAO = CreateUnique<VertexArray>();
 		VAO->Bind();
 
-		auto VBuf = VertexBuffer::Create(Vertices.size() * sizeof(float), Vertices.data());
+		auto VBuf = CreateUnique<VertexBuffer>(Vertices.size() * sizeof(float), Vertices.data());
 		VBuf->Bind();
 		VertexLayout layout = (m_MeshProps & MeshPropsTextureCoords) ? VertexLayout({ 3, 2 }) : VertexLayout({ 3 });
 		VAO->SetVertexLayout(layout);
 
-		auto IBuf = IndexBuffer::Create((GLsizei)Indices.size(), Indices.data());
+		auto IBuf = CreateUnique<IndexBuffer>((GLsizei)Indices.size(), Indices.data());
 		IBuf->Bind();
 
-		return Mesh(VBuf, IBuf, VAO);
+		return new Mesh(VBuf.get(), IBuf.get(), VAO.get());
 	}
 }

@@ -121,8 +121,9 @@ namespace Jolt
 	void Application::ProcessEventQueue()
 	{
 		JOLT_PROFILE_FUNCTION();
-		while (Event* e = m_EventQueue.PopEvent())
+		while (!m_EventQueue.IsEmpty())
 		{
+			Event* e = m_EventQueue.PopEvent();
 			EventDispatcher dispatch(e);
 			dispatch.Dispatch<WindowResizeEvent>([](WindowResizeEvent e) -> bool
 			{

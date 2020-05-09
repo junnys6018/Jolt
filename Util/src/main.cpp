@@ -12,8 +12,6 @@ void Useage(const char* name)
 	std::cout << std::endl;
 }
 
-
-
 int main(int argc, char** argv)
 {
 	const char* prog_name = argv[0];
@@ -23,8 +21,24 @@ int main(int argc, char** argv)
 		{
 			MeshCommand(argc, argv);
 		}
+		else if (strcmp(argv[1], "--help") == 0 && argc == 2)
+		{
+			Useage(prog_name);
+		}
+		else
+		{
+			std::cout << "Unrecognised Command \"";
+			for (int i = 1; i < argc; i++)
+			{
+				if (i != 1)
+				{
+					std::cout << " ";
+				}
+				std::cout << argv[i];
+			}
+			std::cout << "\"\n" << std::endl;
+			Useage(prog_name);
+		}
 	}
-
-	Useage(prog_name);
 	return 0;
 }

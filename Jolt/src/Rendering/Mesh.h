@@ -11,28 +11,31 @@ namespace Jolt
 	public:
 		Mesh() = default;
 		Mesh(VertexBuffer* VBuf, IndexBuffer* IBuf, VertexArray* VAO)
-			:m_VertexBuffer(VBuf), m_IndexBuffer(IBuf), m_VertexArray(VAO)
+			:m_VertexBuffer(std::move(*VBuf)), m_IndexBuffer(std::move(*IBuf)), m_VertexArray(std::move(*VAO))
 		{
 
 		}
 
 		Mesh(Mesh&& other) noexcept
-			:m_VertexBuffer(other.m_VertexBuffer.release()), m_IndexBuffer(other.m_IndexBuffer.release()), m_VertexArray(other.m_VertexArray.release())
+			:m_VertexBuffer(std::move(other.m_VertexBuffer)), m_IndexBuffer(std::move(other.m_IndexBuffer)), m_VertexArray(std::move(other.m_VertexArray))
 		{
 
 		}
 
 		Mesh& operator=(Mesh&& other) noexcept
 		{
-			m_VertexBuffer.reset(other.m_VertexBuffer.release());
-			m_IndexBuffer.reset(other.m_IndexBuffer.release());
-			m_VertexArray.reset(other.m_VertexArray.release());
-
+			// Check for self assignment
+			if (this != &other)
+			{
+				m_VertexBuffer = std::move(other.m_VertexBuffer);
+				m_IndexBuffer = std::move(other.m_IndexBuffer);
+				m_VertexArray = std::move(other.m_VertexArray);
+			}
 			return *this;
 		}
-		// TODO: Mesh should own Vertex Buffers, Index Buffers ... and not pointers to them
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
-		std::unique_ptr<VertexArray> m_VertexArray;
+
+		VertexBuffer m_VertexBuffer;
+		IndexBuffer m_IndexBuffer;
+		VertexArray m_VertexArray;
 	};
 }

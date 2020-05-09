@@ -11,14 +11,32 @@ namespace Jolt
 		return vertexArray;
 	}
 
+	VertexArray::VertexArray(VertexArray&& other) noexcept
+		:m_ID(other.m_ID)
+	{
+		other.m_ID = 0;
+	}
+
+	VertexArray& VertexArray::operator=(VertexArray&& other) noexcept
+	{
+		// Check for self assignment
+		if (this != &other)
+		{
+			Free();
+			m_ID = other.m_ID;
+			other.m_ID = 0;
+		}
+		return *this;
+	}
+
+	void VertexArray::Free()
+	{
+		glDeleteVertexArrays(1, &m_ID);
+	}
+
 	VertexArray::~VertexArray()
 	{
-		GLint current_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &current_vertex_array);
-		if (current_vertex_array == m_ID)
-		{
-			glBindVertexArray(0);
-		}
-		glDeleteVertexArrays(1, &m_ID);
+		Free();
 	}
 
 	void VertexArray::Bind()

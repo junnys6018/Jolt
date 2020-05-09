@@ -11,7 +11,7 @@ namespace Jolt
 
 		void SetDimensions(float x0, float y0, float x1, float y1);
 
-		virtual Mesh GenerateMesh() override;
+		virtual Mesh* GenerateMesh() override;
 
 	private:
 		float m_X0 = -1.0f, m_Y0 = -1.0f, m_X1 = 1.0f, m_Y1 = 1.0f;

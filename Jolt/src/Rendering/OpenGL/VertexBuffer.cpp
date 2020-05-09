@@ -14,6 +14,24 @@ namespace Jolt
 		return vertexBuffer;
 	}
 
+	VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
+		:m_ID(other.m_ID)
+	{
+		other.m_ID = 0;
+	}
+
+	VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept
+	{
+		// Check for self assignment
+		if (this != &other)
+		{
+			Free();
+			m_ID = other.m_ID;
+			other.m_ID = 0;
+		}
+		return *this;
+	}
+
 	void VertexBuffer::Bind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
@@ -24,14 +42,14 @@ namespace Jolt
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	void VertexBuffer::Free()
+	{
+		glDeleteBuffers(1, &m_ID);
+	}
+
 	VertexBuffer::~VertexBuffer()
 	{
-		GLint current_vertex_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_vertex_buffer);
-		if (current_vertex_buffer == m_ID)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-		}
-		glDeleteBuffers(1, &m_ID);
+		Free();
 	}
 
 }

@@ -16,12 +16,18 @@ namespace Jolt
 
 		~IndexBuffer();
 	private:
-		IndexBuffer(GLsizei count)
+		IndexBuffer(GLsizei count = 0)
 			:m_ID(0), m_Count(count) 
 		{
 	
 		}
+		IndexBuffer(IndexBuffer&& other) noexcept;
+		IndexBuffer& operator=(IndexBuffer&& other) noexcept;
+		void Free();
+
 		GLuint m_ID;
 		GLsizei m_Count;
+
+		friend class Mesh; // For move constructor
 	};
 }

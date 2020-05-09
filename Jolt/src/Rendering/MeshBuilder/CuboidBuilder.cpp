@@ -23,7 +23,7 @@ namespace Jolt
 		m_Depth = depth;
 	}
 
-	Mesh CuboidBuilder::GenerateMesh()
+	Mesh* CuboidBuilder::GenerateMesh()
 	{
 		// TODO: Test face culling (ie vertices are in ACW order)
 		if (m_MeshProps == MeshProps::None)
@@ -63,23 +63,22 @@ namespace Jolt
 				1, 5, 6
 			};
 
-			auto VAO = VertexArray::Create();
+			auto VAO = CreateUnique<VertexArray>();
 			VAO->Bind();
 
-			auto VBuf = VertexBuffer::Create(sizeof(vertices), vertices);
+			auto VBuf = CreateUnique<VertexBuffer>(sizeof(vertices), vertices);
 			VBuf->Bind();
 			VAO->SetVertexLayout({ 3 });
 
-			auto IBuf = IndexBuffer::Create(sizeof(indices) / sizeof(unsigned int), indices);
+			auto IBuf = CreateUnique<IndexBuffer>(sizeof(indices) / sizeof(unsigned int), indices);
 			IBuf->Bind();
 			
-			return Mesh(VBuf, IBuf, VAO);
+			return new Mesh(VBuf.get(), IBuf.get(), VAO.get());
 		}
 		else
 		{
 			// TODO: 
 			LOG_CRITICAL("HAVENT IMPLEMENTED VERTEX ATTRIBUTES");
 		}
-		return Mesh();
 	}
 }

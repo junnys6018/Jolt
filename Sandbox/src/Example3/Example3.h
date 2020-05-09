@@ -17,9 +17,9 @@ public:
 		m_Camera.SetSpeed(0.005f);
 
 		MeshMetaData mesh_meta_data;
-		Mesh mesh = CreateFromFile("res/sp.jltmsh", &mesh_meta_data);
+		Mesh* mesh = CreateFromFile("res/sp.jltmsh", &mesh_meta_data);
 
-		m_Model = std::make_unique<DrawData<MatGooch>>(std::move(mesh), std::make_shared<MatGooch>(glm::vec3(0.090f, 0.992f, 0.941f)));
+		m_Model = DrawData<MatGooch>(mesh, std::make_shared<MatGooch>(glm::vec3(0.090f, 0.992f, 0.941f)));
 
 		m_GoochShader = CreateUnique<Shader>("res/Gooch.glsl", mesh_meta_data.GetReplacementMap());
 
@@ -32,7 +32,7 @@ public:
 
 		RectangleBuilder builder{};
 		builder.SetMeshProps(MeshPropsTextureCoords);
-		m_FlatRectangle = builder.GenerateMesh();
+		m_FlatRectangle = std::move(*builder.GenerateMesh());
 	}
 
 	virtual void OnDetach() override
@@ -50,12 +50,12 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		GoochRenderer::BeginScene(LightPoint(glm::vec3(1.0f), glm::vec3(0.0f, 2.0f, 0.0f)), m_GoochShader.get(), m_Camera.GetCamera());
-		GoochRenderer::Submit(*m_Model);
+		GoochRenderer::Submit(m_Model);
 		GoochRenderer::EndScene();
 
 		m_RenderTarget->UnBind();
 
-		m_FlatRectangle.m_VertexArray->Bind();
+		m_FlatRectangle.m_VertexArray.Bind();
 		m_PostProcessShader->Bind();
 		glDisable(GL_DEPTH_TEST);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -87,7 +87,7 @@ public:
 private:
 	CameraController m_Camera;
 	bool m_PostProcess;
-	std::unique_ptr<DrawData<MatGooch>> m_Model;
+	DrawData<MatGooch> m_Model;
 	std::unique_ptr<Shader> m_GoochShader, m_PostProcessShader;
 	std::unique_ptr<FrameBuffer> m_RenderTarget;
 	Mesh m_FlatRectangle;

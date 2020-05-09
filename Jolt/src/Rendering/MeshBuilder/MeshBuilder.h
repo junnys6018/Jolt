@@ -16,7 +16,7 @@ namespace Jolt
 	{
 	public:
 		void SetMeshProps(int props) { m_MeshProps = props; }
-		virtual Mesh GenerateMesh() = 0;
+		virtual Mesh* GenerateMesh() = 0;
 	protected:
 		int m_MeshProps = 0;
 	};
