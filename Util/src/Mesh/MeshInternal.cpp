@@ -176,9 +176,9 @@ void ExpandObj(std::vector<vec3>& vPos, std::vector<vec3>& vNorm, std::vector<ve
 		if (map.find(index) == map.end())	// if no index exsists
 		{
 			// convert negative indices to positive
-			unsigned int vIndex = index.v >= 0 ? index.v : vPos.size() + index.v + 1;
-			unsigned int vtIndex = index.vt >= 0 ? index.vt : vTex.size() + index.vt + 1;
-			unsigned int vnIndex = index.vn >= 0 ? index.vn : vNorm.size() + index.vn + 1;
+			size_t vIndex = index.v >= 0 ? index.v : vPos.size() + index.v + 1;
+			size_t vtIndex = index.vt >= 0 ? index.vt : vTex.size() + index.vt + 1;
+			size_t vnIndex = index.vn >= 0 ? index.vn : vNorm.size() + index.vn + 1;
 
 			vertexBuffer.emplace_back(vPos[vIndex].x);
 			vertexBuffer.emplace_back(vPos[vIndex].y);

@@ -6,7 +6,7 @@
 
 namespace Jolt
 {
-	struct Mesh
+	class Mesh
 	{
 	public:
 		Mesh() = default;

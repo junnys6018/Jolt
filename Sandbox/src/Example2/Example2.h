@@ -95,6 +95,11 @@ public:
 		ImGui::SliderFloat("Rotate Speed", &m_RotateSpeed, 0.001f, 0.02f);
 		ImGui::Text("Press 'R' to Rotate");
 
+		if (ImGui::Button("Screenshot"))
+		{
+			Screenshot::Capture();
+		}
+
 		ImGui::End();
 	}
 

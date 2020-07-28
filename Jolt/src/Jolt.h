@@ -18,5 +18,7 @@
 #include "Core/Events/__Events__.h"
 #include "Core/Input.h"
 #include "Camera/CameraController.h"
+#include "Core/Screenshot.h"
 
 #include "Debug/Profiling/Timer.h"
+
